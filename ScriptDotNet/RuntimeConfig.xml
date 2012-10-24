@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+
+  <References>
+    <Assembly name="System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" sn="true"/>
+  </References>
+  
+  <Types>
+    <Type alias="string" name="System.String" />
+    <Type alias="int" name="System.Int32" />
+    <Type alias="long" name="System.Int64" />
+    <Type alias="Char" name="System.Char" />
+    <Type alias="bool" name="System.Boolean" />
+    <Type alias="boolean" name="System.Boolean" />    
+    <Type alias="double" name="System.Double" />
+    <Type alias="decimal" name="System.Decimal" />
+    <Type alias="float" name="System.Single" />
+    <Type alias="object" name="System.Object" />
+
+    <Type alias="Array" name="System.Collections.Generic.List`1[[System.Object]]" />   
+    <Type alias="Expando" name="ScriptNET.Runtime.Expando" />
+    <Type alias="Wrapper" name="ScriptNET.Runtime.ExpandoWrapper" />
+  </Types>
+
+  <Scopes>
+    <!--Default Scope-->
+    <Scope id="0" type="ScriptNET.Runtime.ScriptScopeActivator" />
+    
+    <!--Function Contract-->
+    <Scope id="1" type="ScriptNET.Runtime.FunctionScopeActivator" />
+    
+    <!--Using statement-->
+    <Scope id="2" type="ScriptNET.Runtime.ScriptUsingScopeActivator" />
+
+    <!--Event scope-->
+    <Scope id="3" type="ScriptNET.Runtime.EventScopeActivator" />
+
+  </Scopes>
+
+  <Operators>
+    <Operator name="Plus" type="ScriptNET.Runtime.Operators.PlusOperator"/>
+    <Operator name="Minus" type="ScriptNET.Runtime.Operators.MinusOperator"/>
+    <Operator name="Mod" type="ScriptNET.Runtime.Operators.ModOperator"/>
+    <Operator name="Div" type="ScriptNET.Runtime.Operators.DivOperator"/>
+    <Operator name="Mul" type="ScriptNET.Runtime.Operators.MulOperator"/>
+    <Operator name="Pow" type="ScriptNET.Runtime.Operators.PowOperator"/>
+
+    <Operator name="Less" type="ScriptNET.Runtime.Operators.LessOperator"/>
+    <Operator name="LessEquals" type="ScriptNET.Runtime.Operators.LqOperator"/>
+    <Operator name="Greater" type="ScriptNET.Runtime.Operators.GrOperator"/>
+    <Operator name="GreaterEquals" type="ScriptNET.Runtime.Operators.GqOperator"/>
+    
+    <Operator name="And" type="ScriptNET.Runtime.Operators.AndOperator"/>
+    <Operator name="And2" type="ScriptNET.Runtime.Operators.And2Operator"/>
+    <Operator name="Or" type="ScriptNET.Runtime.Operators.OrOperator"/>
+    <Operator name="Or2" type="ScriptNET.Runtime.Operators.Or2Operator"/>
+    <Operator name="Equals" type="ScriptNET.Runtime.Operators.EqualsOperator"/>
+    <Operator name="NotEquals" type="ScriptNET.Runtime.Operators.NotEqualsOperator"/>
+
+    <Operator name="Is" type="ScriptNET.Runtime.Operators.IsOperator"/>
+    
+    <!-- Unary -->
+    <Operator name="Negate1" type="ScriptNET.Runtime.Operators.NegateOperator1"/>
+    <Operator name="Negate2" type="ScriptNET.Runtime.Operators.NegateOperator2"/>
+    <Operator name="Negate3" type="ScriptNET.Runtime.Operators.NegateOperator3"/>
+  </Operators>
+    
+  <Settings>
+    <Item id="UnsubscribeAllEvents" value="true" converter="System.ComponentModel.BooleanConverter, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+    <Item id="ScopeFactory" value="ScriptNET.Runtime.ScopeFactory" />
+    <Item id="ScriptableObjectType" value="ScriptNET.Runtime.Expando" />
+  </Settings>
+  
+  <Initialization>
+    <![CDATA[
+    ]]>
+  </Initialization>
+</Configuration>

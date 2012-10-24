@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapleShark", "MapleShark.csproj", "{01F7E3B6-B831-4D44-8B44-095768212822}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01F7E3B6-B831-4D44-8B44-095768212822}.Debug|x86.ActiveCfg = Debug|x86
+		{01F7E3B6-B831-4D44-8B44-095768212822}.Debug|x86.Build.0 = Debug|x86
+		{01F7E3B6-B831-4D44-8B44-095768212822}.Release|x86.ActiveCfg = Release|x86
+		{01F7E3B6-B831-4D44-8B44-095768212822}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
