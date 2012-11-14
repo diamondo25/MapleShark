@@ -23,7 +23,10 @@ namespace MapleShark
         private byte[] mBuffer = new byte[DEFAULT_SIZE];
         private int mCursor = 0;
 
-        public MapleStream(bool pOutbound, ushort pBuild, byte[] pIV) { mOutbound = pOutbound; mAES = new MapleAES(pBuild, pIV); }
+        public MapleStream(bool pOutbound, ushort pBuild, byte pLocale, byte[] pIV) { 
+            mOutbound = pOutbound; 
+            mAES = new MapleAES(pBuild, pLocale, pIV);
+        }
 
         public void Append(byte[] pBuffer) { Append(pBuffer, 0, pBuffer.Length); }
         public void Append(byte[] pBuffer, int pStart, int pLength)
@@ -65,31 +68,6 @@ namespace MapleShark
             else if (pLocale == 1 || pLocale == 2)
             { // KMS / KMST
                 Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.SPECIAL);
-            }
-            else if (pLocale == 8 && pBuild >= 118)
-            {
-                if (pBuild >= 120)
-                    mAES.ChangeKey(new byte[] {
-                        0x8D, 0x00, 0x00, 0x00, 
-                        0xD5, 0x00, 0x00, 0x00, 
-                        0xD0, 0x00, 0x00, 0x00, 
-                        0x2B, 0x00, 0x00, 0x00, 
-                        0xA8, 0x00, 0x00, 0x00, 
-                        0xFF, 0x00, 0x00, 0x00, 
-                        0x74, 0x00, 0x00, 0x00, 
-                        0xFE, 0x00, 0x00, 0x00});
-                else if (pBuild >= 118)
-                    mAES.ChangeKey(new byte[] {
-                        0x5A, 0x00, 0x00, 0x00, 
-                        0x22, 0x00, 0x00, 0x00,
-                        0xFB, 0x00, 0x00, 0x00, 
-                        0xD1, 0x00, 0x00, 0x00,
-                        0x8F, 0x00, 0x00, 0x00, 
-                        0x93, 0x00, 0x00, 0x00, 
-                        0xCD, 0x00, 0x00, 0x00, 
-                        0xE6, 0x00, 0x00, 0x00
-                    });
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES_MCRYPTO);
             }
             else
             { // All others lol

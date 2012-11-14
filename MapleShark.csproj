@@ -206,6 +206,7 @@
     <Compile Include="frmLocale.Designer.cs">
       <DependentUpon>frmLocale.cs</DependentUpon>
     </Compile>
+    <Compile Include="GMSKeys.cs" />
     <Compile Include="HexBox\ByteCollection.cs" />
     <Compile Include="HexBox\DataBlock.cs" />
     <Compile Include="HexBox\DataMap.cs" />

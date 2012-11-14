@@ -34,22 +34,20 @@ namespace MapleShark
         private ICryptoTransform mTransformer = null;
         public byte[] mIV { get; private set; }
 
-        internal MapleAES(ushort pBuild, byte[] pIV)
+        internal MapleAES(ushort pBuild, byte pLocale, byte[] pIV)
         {
             mBuild = pBuild;
-            mAES.Key = sSecretKey;
+            if ((short)pBuild < 0) { // Second one
+                pBuild = (ushort)(0xFFFF - pBuild);
+            }
+            if (pLocale == 8 && pBuild >= 118) // GMS uses random keys since 118!
+                mAES.Key = GMSKeys.GetKeyForVersion(pBuild);
+            else
+                mAES.Key = sSecretKey;
             mAES.Mode = CipherMode.ECB;
             mAES.Padding = PaddingMode.PKCS7;
             mTransformer = mAES.CreateEncryptor();
             mIV = pIV;
-        }
-
-        public void ChangeKey(byte[] pKey)
-        {
-            mAES.Key = pKey;
-            mAES.Mode = CipherMode.ECB;
-            mAES.Padding = PaddingMode.PKCS7;
-            mTransformer = mAES.CreateEncryptor();
         }
 
 		public void ShiftIVOld() {

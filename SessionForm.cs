@@ -165,8 +165,8 @@ namespace MapleShark
                 mLocale = serverLocale;
                 mPatchLocation = patchLocation;
 
-                mOutboundStream = new MapleStream(true, mBuild, localIV);
-                mInboundStream = new MapleStream(false, (ushort)(0xFFFF - mBuild), remoteIV);
+                mOutboundStream = new MapleStream(true, mBuild, mLocale, localIV);
+                mInboundStream = new MapleStream(false, (ushort)(0xFFFF - mBuild), mLocale, remoteIV);
                 mInboundSequence += (uint)tcpData.Length;
 
                 // Generate HandShake packet
