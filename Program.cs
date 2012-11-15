@@ -18,6 +18,7 @@ namespace MapleShark
             RegisterFileAssociation(".msb", "MapleShark", "MapleShark Binary File", Assembly.GetExecutingAssembly().Location, string.Empty, 0);
 
             CraftNetTools.AppUpdates.Check();
+            GMSKeys.Initialize();
 
             RuntimeHost.Initialize();
             Application.EnableVisualStyles();
