@@ -48,6 +48,7 @@
             this.mMenu = new System.Windows.Forms.MenuStrip();
             this.mFileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileImportMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.importJavapropertiesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileSeparatorMenu = new System.Windows.Forms.ToolStripSeparator();
             this.mFileQuit = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,7 +68,6 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.mDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.importJavapropertiesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenu.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -101,6 +101,13 @@
             this.mFileImportMenu.Size = new System.Drawing.Size(218, 22);
             this.mFileImportMenu.Text = "&Import";
             this.mFileImportMenu.Click += new System.EventHandler(this.mFileImportMenu_Click);
+            // 
+            // importJavapropertiesFileToolStripMenuItem
+            // 
+            this.importJavapropertiesFileToolStripMenuItem.Name = "importJavapropertiesFileToolStripMenuItem";
+            this.importJavapropertiesFileToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.importJavapropertiesFileToolStripMenuItem.Text = "Import Java *.properties file";
+            this.importJavapropertiesFileToolStripMenuItem.Click += new System.EventHandler(this.importJavapropertiesFileToolStripMenuItem_Click);
             // 
             // mFileOpenMenu
             // 
@@ -181,7 +188,7 @@
             // 
             // mTimer
             // 
-            this.mTimer.Interval = 500;
+            this.mTimer.Interval = 300;
             this.mTimer.Tick += new System.EventHandler(this.mTimer_Tick);
             // 
             // mImportDialog
@@ -321,13 +328,6 @@
             this.mDockPanel.Skin = dockPanelSkin1;
             this.mDockPanel.TabIndex = 4;
             this.mDockPanel.ActiveDocumentChanged += new System.EventHandler(this.mDockPanel_ActiveDocumentChanged);
-            // 
-            // importJavapropertiesFileToolStripMenuItem
-            // 
-            this.importJavapropertiesFileToolStripMenuItem.Name = "importJavapropertiesFileToolStripMenuItem";
-            this.importJavapropertiesFileToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.importJavapropertiesFileToolStripMenuItem.Text = "Import Java *.properties file";
-            this.importJavapropertiesFileToolStripMenuItem.Click += new System.EventHandler(this.importJavapropertiesFileToolStripMenuItem_Click);
             // 
             // MainForm
             // 

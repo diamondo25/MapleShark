@@ -16,39 +16,39 @@ namespace CraftNetTools
     {
         public static void Check()
         {
-
             string name = Application.ProductName;
             int version = int.Parse(Application.ProductVersion.Replace(".", ""));
 
             try
             {
-                HttpWebRequest req = WebRequest.Create(string.Format("http://direct.craftnet.nl/app_updates/updates.php?appname={0}&appver={1}", name, version)) as HttpWebRequest;
+                if (File.Exists("noupdate.txt")) return;
+
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(string.Format("http://direct.craftnet.nl/app_updates/updates.php?appname={0}&appver={1}", name, version));
                 req.Proxy = null;
+                req.Timeout = 10000; // 10 seconds
 
                 using (HttpWebResponse response = req.GetResponse() as HttpWebResponse)
+                using (StreamReader sr = new StreamReader(response.GetResponseStream()))
                 {
-                    if (File.Exists("noupdate.txt")) return;
-                    using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+                    string responseText = sr.ReadLine();
+                    if (responseText.StartsWith("ERROR:"))
                     {
-                        string responseText = sr.ReadLine();
-                        if (responseText.StartsWith("ERROR:"))
+                        MessageBox.Show(string.Format("Error occurred while checking for new version: {0}", responseText), name);
+                    }
+                    else
+                    {
+                        string url = sr.ReadLine();
+                        int latestVersion = int.Parse(responseText);
+                        if (latestVersion > version)
                         {
-                            MessageBox.Show(string.Format("Error occurred while checking for new version: {0}", responseText), name);
-                        }
-                        else
-                        {
-                            string url = sr.ReadLine();
-                            int latestVersion = int.Parse(responseText);
-                            if (latestVersion > version)
+                            if (MessageBox.Show(string.Format("A new version is released!\r\nVersion: {0}\r\n\r\nPress OK to go to download page!", latestVersion), name, MessageBoxButtons.OKCancel) == DialogResult.OK)
                             {
-                                if (MessageBox.Show(string.Format("A new version is released!\r\nVersion: {0}\r\n\r\nPress OK to go to download page!", latestVersion), name, MessageBoxButtons.OKCancel) == DialogResult.OK)
-                                {
-                                    Process.Start(url);
-                                }
+                                Process.Start(url);
                             }
                         }
                     }
                 }
+
             }
             catch
             {

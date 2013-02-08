@@ -161,10 +161,8 @@ namespace MapleShark
 
         public byte[] Dump()
         {
-            byte[] buffer = new byte[mBuffer.Length + 12];
+            byte[] buffer = new byte[mBuffer.Length + 13];
             ushort size = (ushort)(mBuffer.Length);
-            if (mOutbound) 
-                size |= 0x8000;
 
             long ticks = mTimestamp.Ticks;
             buffer[0] = (byte)ticks;
@@ -182,7 +180,9 @@ namespace MapleShark
             buffer[10] = (byte)mOpcode;
             buffer[11] = (byte)(mOpcode >> 8);
 
-            Buffer.BlockCopy(mBuffer, 0, buffer, 12, mBuffer.Length);
+            buffer[12] = mOutbound ? (byte)1 : (byte)0;
+
+            Buffer.BlockCopy(mBuffer, 0, buffer, 13, mBuffer.Length);
 
             return buffer;
         }

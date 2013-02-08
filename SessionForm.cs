@@ -292,6 +292,7 @@ namespace MapleShark
             {
                 BinaryReader reader = new BinaryReader(stream);
                 mBuild = reader.ReadUInt16();
+                ushort version = mBuild;
                 if (mBuild == 0x2012)
                 {
                     mLocale = (byte)reader.ReadUInt16();
@@ -308,7 +309,7 @@ namespace MapleShark
                     mLocale = (byte)reader.ReadUInt16();
                     mBuild = reader.ReadUInt16();
                 }
-                else if (mBuild == 0x2015)
+                else if (mBuild == 0x2015 || mBuild == 0x2020)
                 {
                     mLocalEndpoint = reader.ReadString();
                     mLocalPort = reader.ReadUInt16();
@@ -335,8 +336,14 @@ namespace MapleShark
                     long timestamp = reader.ReadInt64();
                     ushort size = reader.ReadUInt16();
                     ushort opcode = reader.ReadUInt16();
-                    bool outbound = (size & 0x8000) != 0;
-                    size = (ushort)(size & 0x7FFF);
+                    bool outbound;
+                    if (version >= 0x2020) {
+                        outbound = reader.ReadBoolean();
+                    }
+                    else {
+                        outbound = (size & 0x8000) != 0;
+                        size = (ushort)(size & 0x7FFF);
+                    }
                     byte[] buffer = reader.ReadBytes(size);
 					Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, outbound, opcode);
                     MaplePacket packet = new MaplePacket(new DateTime(timestamp), outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer);
@@ -401,7 +408,7 @@ namespace MapleShark
             using (FileStream stream = new FileStream(mFilename, FileMode.Create, FileAccess.Write))
             {
                 BinaryWriter writer = new BinaryWriter(stream);
-                writer.Write((ushort)0x2015);
+                writer.Write((ushort)0x2020);
                 writer.Write(mLocalEndpoint);
                 writer.Write(mLocalPort);
                 writer.Write(mRemoteEndpoint);
@@ -432,18 +439,20 @@ namespace MapleShark
             tmp += string.Format("- Packets: {0}\r\n", mPackets.Count);
 
             long dataSize = 0;
-            mPackets.ForEach((mp) => { dataSize += 2 + mp.InnerBuffer.Length; });
+            foreach (var packet in mPackets)
+                dataSize += 2 + packet.InnerBuffer.Length;
 
             tmp += string.Format("- Data: {0:N0} bytes\r\n", dataSize);
             tmp += string.Format("================================================\r\n");
             File.WriteAllText(mExportDialog.FileName, tmp);
+
             tmp = "";
+
             int outboundCount = 0;
             int inboundCount = 0;
             int i = 0;
-            foreach (MaplePacket packet in mPackets)
+            foreach (var packet in mPackets)
             {
-
                 if (packet.Outbound) ++outboundCount;
                 else ++inboundCount;
                 tmp += string.Format("[{0}][{2}] [{3:X4}] {4}\r\n", packet.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff"), (packet.Outbound ? outboundCount : inboundCount), (packet.Outbound ? "Outbound" : "Inbound "), packet.Opcode, BitConverter.ToString(packet.InnerBuffer).Replace('-', ' '));

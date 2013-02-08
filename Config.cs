@@ -48,18 +48,20 @@ namespace MapleShark
             {
                 headerList[i] = new Dictionary<ushort, Dictionary<ushort, SortedDictionary<ushort, string>>>();
             }
-            Definitions.ForEach((d) =>
+            foreach (var d in Definitions)
             {
                 if (d.Opcode == 0xFFFF) return;
-                if (!headerList[d.Outbound ? 1 : 0].ContainsKey(d.Locale))
-                    headerList[d.Outbound ? 1 : 0].Add(d.Locale, new Dictionary<ushort, SortedDictionary<ushort, string>>());
-                if (!headerList[d.Outbound ? 1 : 0][d.Locale].ContainsKey(d.Build))
-                    headerList[d.Outbound ? 1 : 0][d.Locale].Add(d.Build, new SortedDictionary<ushort, string>());
-                if (!headerList[d.Outbound ? 1 : 0][d.Locale][d.Build].ContainsKey(d.Opcode))
-                    headerList[d.Outbound ? 1 : 0][d.Locale][d.Build].Add(d.Opcode, d.Name);
+                byte outbound = (byte)(d.Outbound ? 1 : 0);
+
+                if (!headerList[outbound].ContainsKey(d.Locale))
+                    headerList[outbound].Add(d.Locale, new Dictionary<ushort, SortedDictionary<ushort, string>>());
+                if (!headerList[outbound][d.Locale].ContainsKey(d.Build))
+                    headerList[outbound][d.Locale].Add(d.Build, new SortedDictionary<ushort, string>());
+                if (!headerList[outbound][d.Locale][d.Build].ContainsKey(d.Opcode))
+                    headerList[outbound][d.Locale][d.Build].Add(d.Opcode, d.Name);
                 else
-                    headerList[d.Outbound ? 1 : 0][d.Locale][d.Build][d.Opcode] = d.Name;
-            });
+                    headerList[outbound][d.Locale][d.Build][d.Opcode] = d.Name;
+            };
 
             for (int i = 0; i < 2; i++)
             {
