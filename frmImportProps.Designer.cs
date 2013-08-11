@@ -151,9 +151,9 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.txtLog);
-            this.groupBox1.Location = new System.Drawing.Point(12, 153);
+            this.groupBox1.Location = new System.Drawing.Point(12, 140);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(342, 169);
+            this.groupBox1.Size = new System.Drawing.Size(342, 182);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Log";
@@ -164,7 +164,8 @@
             this.txtLog.MaxLength = 3276700;
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(330, 144);
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtLog.Size = new System.Drawing.Size(330, 157);
             this.txtLog.TabIndex = 0;
             // 
             // frmImportProps
@@ -185,6 +186,7 @@
             this.Controls.Add(this.txtPropFile);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmImportProps";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Import Properties File";
             ((System.ComponentModel.ISupportInitialize)(this.nudLocale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVersion)).EndInit();

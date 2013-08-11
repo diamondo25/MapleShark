@@ -131,6 +131,21 @@ namespace MapleShark
                             mBuffer[mCursor++] << 56);
             return true;
         }
+        public bool ReadFlippedLong(out long pValue) // 5 6 7 8 1 2 3 4
+        {
+            pValue = 0;
+            if (mCursor + 8 > mBuffer.Length) return false;
+            pValue = (long)(
+                            mBuffer[mCursor++] << 32 |
+                            mBuffer[mCursor++] << 40 |
+                            mBuffer[mCursor++] << 48 |
+                            mBuffer[mCursor++] << 56 |
+                            mBuffer[mCursor++] |
+                            mBuffer[mCursor++] << 8 |
+                            mBuffer[mCursor++] << 16 |
+                            mBuffer[mCursor++] << 24);
+            return true;
+        }
         public bool ReadDouble(out double pValue)
         {
             pValue = 0;

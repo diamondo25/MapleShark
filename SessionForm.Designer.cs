@@ -80,10 +80,10 @@
             this.mPacketList.FullRowSelect = true;
             this.mPacketList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.mPacketList.HideSelection = false;
-            this.mPacketList.Location = new System.Drawing.Point(0, 0);
+            this.mPacketList.Location = new System.Drawing.Point(0, 24);
             this.mPacketList.MultiSelect = false;
             this.mPacketList.Name = "mPacketList";
-            this.mPacketList.Size = new System.Drawing.Size(611, 451);
+            this.mPacketList.Size = new System.Drawing.Size(611, 427);
             this.mPacketList.TabIndex = 0;
             this.mPacketList.UseCompatibleStateImageBehavior = false;
             this.mPacketList.View = System.Windows.Forms.View.Details;

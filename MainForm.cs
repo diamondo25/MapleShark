@@ -132,10 +132,10 @@ namespace MapleShark
             if (mImportDialog.ShowDialog(this) != DialogResult.OK) return;
             device = new CaptureFileReaderDevice(mImportDialog.FileName);
             device.Open();
-			new Thread(timer_Tick).Start();
+            new Thread(ParseImportedFile).Start();
         }
 
-        void timer_Tick()
+        void ParseImportedFile()
         {
 			while (device.Opened) {
                 RawCapture packet = null;

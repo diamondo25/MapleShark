@@ -11,6 +11,7 @@ namespace MapleShark
         AES,
         AES_MCRYPTO,
         MCRYPTO,
+        OLDEST_MCRYPTO,
         NONE,
     }
 
@@ -48,29 +49,35 @@ namespace MapleShark
             {
                 throw new Exception("Failed to confirm packet header");
             }
+
             ushort packetSize = mAES.GetHeaderLength(mBuffer, 0, pBuild == 255 && pLocale == 1);
             if (mCursor < (packetSize + 4)) return null;
             byte[] packetBuffer = new byte[packetSize];
             Buffer.BlockCopy(mBuffer, 4, packetBuffer, 0, packetSize);
+
             bool byteheader = false;
             if (pBuild == 40 && pLocale == 5)
-            { // WvsBeta
+            { 
+                // WvsBeta
                 Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.MCRYPTO);
                 byteheader = true;
             }
             else if (pLocale == 1 && pBuild == 255)
-            { // KMSB lol
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.NONE);
+            { 
+                // KMSB lol
+                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.OLDEST_MCRYPTO);
                 byteheader = true;
                 // Still reset header.
                 mAES.ShiftIVOld();
             }
             else if (pLocale == 1 || pLocale == 2)
-            { // KMS / KMST
+            { 
+                // KMS / KMST
                 Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.SPECIAL);
             }
             else
-            { // All others lol
+            { 
+                // All others lol
                 Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES_MCRYPTO);
             }
 
@@ -147,6 +154,10 @@ namespace MapleShark
             else if (pTransformLocale == TransformLocale.NONE)
             {
                 // lol
+            }
+            else if (pTransformLocale == TransformLocale.OLDEST_MCRYPTO)
+            {
+                mAES.TransformOldKMS(pBuffer);
             }
             else if (pTransformLocale == TransformLocale.MCRYPTO)
             {

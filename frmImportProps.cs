@@ -44,9 +44,8 @@ namespace MapleShark
             {
                 var val = opcode;
                 if (val.Contains("#"))
-                {
                     val = val.Remove(val.IndexOf('#'));
-                }
+
                 val = val.Trim();
                 if (val == "") continue;
 
@@ -54,7 +53,13 @@ namespace MapleShark
                 if (splitted.Length != 2) continue;
 
                 string name = splitted[0].Trim();
-                ushort header = ushort.Parse(splitted[1].Replace("0x", "").Trim(), System.Globalization.NumberStyles.HexNumber);
+                ushort header = 0;
+
+                string headerval = splitted[1].Trim();
+                if (headerval.StartsWith("0x"))
+                    header = ushort.Parse(headerval.Substring(2), System.Globalization.NumberStyles.HexNumber);
+                else
+                    header = ushort.Parse(headerval, System.Globalization.NumberStyles.Integer);
 
                 AddOpcode(version, locale, !chkIsSend.Checked, header, name);
             }

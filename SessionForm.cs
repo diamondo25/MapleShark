@@ -139,9 +139,15 @@ namespace MapleShark
                 byte[] localIV = pr.ReadBytes(4);
                 byte[] remoteIV = pr.ReadBytes(4);
                 byte serverLocale = pr.ReadByte();
+                if (serverLocale == 0x07 && pr.Remaining > 0)
+                {
+                    ushort unk = pr.ReadUShort();
+                }
 
                 if (pr.Remaining > 0 || serverLocale > 0x12)
                 {
+                    //MessageBox.Show("Connection closing. pr.remaining > 0 | ServerLocale > 0x12: " + (pr.Remaining > 0) + " - " + (serverLocale > 0x12));
+                    //MessageBox.Show(string.Format("Version {0} patch location {1} serverlocale {4}", version, patchLocation, localIV, remoteIV, serverLocale));
                     return Results.CloseMe;
                 }
 
@@ -598,10 +604,10 @@ namespace MapleShark
 				si.txtAdditionalInfo.Text += "\r\nRecording session of a MapleStory Korea" + (mLocale == 1 ? " Test" : "") + " server.\r\nAdditional KMS info:\r\n";
 
 				int test = int.Parse(mPatchLocation);
-				ushort t1 = (ushort)(test & 0x7FFF);
-				int t2 = (test >> 15) & 1;
-				int t3 = (test >> 16) & 0xFF;
-				si.txtAdditionalInfo.Text += "Real Version: " + t1.ToString() + "\r\nSubversion: " + t3.ToString() + "\r\nRemove cookie: " + t2.ToString();
+				ushort maplerVersion = (ushort)(test & 0x7FFF);
+				int subVersion = (test >> 15) & 1;
+				int extraOption = (test >> 16) & 0xFF;
+                si.txtAdditionalInfo.Text += "Real Version: " + maplerVersion + "\r\nSubversion: " + subVersion + "\r\nRemove cookie: " + extraOption;
 			}
 
 			si.Show();
@@ -623,6 +629,8 @@ namespace MapleShark
 
         private void removeLoggedPacketsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (MessageBox.Show("Are you sure you want to delete all logged packets?", "!!", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No) return;
+
             mPackets.Clear();
             ListView.Items.Clear();
             mOpcodes.Clear();

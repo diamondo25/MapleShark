@@ -126,6 +126,13 @@ namespace MapleShark
             CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 8, 8));
             return value;
         }
+        internal long APIAddFlippedLong(string pName)
+        {
+            long value;
+            if (!mParsing.ReadFlippedLong(out value)) throw new Exception("Insufficient packet data");
+            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 8, 8));
+            return value;
+        }
         internal double APIAddDouble(string pName)
         {
             double value;

@@ -58,6 +58,7 @@ namespace MapleShark
         {
             bool b = (pBuffer[pStart] ^ mIV[2]) == (mBuild & 0xFF) &&
                    (pBuffer[pStart + 1] ^ mIV[3]) == ((mBuild >> 8) & 0xFF);
+
             if (!b)
             {
                 Console.WriteLine("Version: {0:X4}", mBuild);
@@ -89,6 +90,7 @@ namespace MapleShark
 			if (pOldHeader) {
 				return BitConverter.ToUInt16(pBuffer, pStart + 2);
 			}
+
             int length = (int)pBuffer[pStart] |
                          (int)(pBuffer[pStart + 1] << 8) |
                          (int)(pBuffer[pStart + 2] << 16) |
@@ -120,6 +122,16 @@ namespace MapleShark
 
 			ShiftIV(oudeIV);
 		}
+
+        // Done by csproj
+        public void TransformOldKMS(byte[] pBuffer)
+        {
+            for (int i = 0; i < pBuffer.Length; i++)
+            {
+                pBuffer[i] = (byte)(16 * (mIV[0] ^ pBuffer[i]) | ((byte)(mIV[0] ^ pBuffer[i]) >> 4));
+            }
+            ShiftIVOld();
+        }
 
 		public void TransformAES(byte[] pBuffer) {
 			int remaining = pBuffer.Length;
