@@ -182,7 +182,8 @@
             this.mFileSeparatorMenu.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mFileSeparatorMenu.MergeIndex = 2;
             this.mFileSeparatorMenu.Name = "mFileSeparatorMenu";
-            this.mFileSeparatorMenu.Size = new System.Drawing.Size(144, 6);
+            this.mFileSeparatorMenu.Size = new System.Drawing.Size(149, 6);
+            this.mFileSeparatorMenu.Click += new System.EventHandler(this.mFileSeparatorMenu_Click);
             // 
             // mFileSaveMenu
             // 

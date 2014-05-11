@@ -58,31 +58,6 @@ namespace MapleShark
         {
             bool b = (pBuffer[pStart] ^ mIV[2]) == (mBuild & 0xFF) &&
                    (pBuffer[pStart + 1] ^ mIV[3]) == ((mBuild >> 8) & 0xFF);
-
-            if (!b)
-            {
-                Console.WriteLine("Version: {0:X4}", mBuild);
-                string buf = "IV [";
-                foreach (byte b1 in mIV)
-                {
-                    buf += string.Format("{0:X2} ", b1);
-                }
-                buf = buf.Trim();
-                buf += "]";
-                Console.WriteLine(buf);
-                {
-                    string ret = "GOT [";
-                    for (int i = 0; i < 4; i++) ret += string.Format("{0:X2} ", pBuffer[pStart + i]);
-                    Console.WriteLine("{0}]", ret);
-                }
-                {
-                    byte[] hdr = new byte[4];
-                    GenerateHeader(hdr);
-                    string ret = "NEEDED [";
-                    for (int i = 0; i < 4; i++) ret += string.Format("{0:X2} ", hdr[i]);
-                    Console.WriteLine("{0}]", ret);
-                }
-            }
             return b;
         }
         public ushort GetHeaderLength(byte[] pBuffer, int pStart, bool pOldHeader)
@@ -155,13 +130,7 @@ namespace MapleShark
 				remaining -= length;
 				length = 0x5B4;
 			}
-			ShiftIV(mIV);
 		}
-
-        public void TransformJMS(byte[] pBuffer)
-        {
-
-        }
 
 		private void Morph(byte inputByte, byte[] start) {
 			byte a = start[1];
@@ -236,26 +205,5 @@ namespace MapleShark
             }
             Buffer.BlockCopy(newIV, 0, mIV, 0, mIV.Length);
         }
-        /*
-        private void ShiftString(byte[] pOldIV)
-        {
-            byte[] newIV = new byte[] { 0xF2, 0x53, 0x50, 0xC6 };
-            for (int index = 0; index < mIV.Length; ++index)
-            {
-                byte temp1 = newIV[1];
-                byte temp2 = sShiftKey[temp1];
-                byte temp3 = pOldIV[index];
-
-                newIV[0] += (byte)(sShiftKey[newIV[1]] - temp2);
-                newIV[1] = (byte)(temp3 - (newIV[2] * sShiftKey[temp3]));
-                byte temp4 = (byte)(newIV[3] - newIV[0]);
-                newIV[2] ^= (byte)(temp2 + sShiftKey[newIV[3]]);
-                newIV[3] = (byte)(sShiftKey[temp2] + temp4);
-
-                newIV[0] = newIV[0].RollLeft(3);
-            }
-            Buffer.BlockCopy(newIV, 0, mIV, 0, mIV.Length);
-        }
-         * */
     }
 }

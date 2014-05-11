@@ -67,6 +67,7 @@ namespace MapleShark
             Config.Instance.LowPort = (ushort)mLowPortNumeric.Value;
             Config.Instance.HighPort = (ushort)mHighPortNumeric.Value;
             Config.Instance.Save();
+
             DialogResult = DialogResult.OK;
         }
     }

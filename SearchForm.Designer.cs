@@ -169,7 +169,6 @@
             this.mPrevSequenceButton.TabIndex = 8;
             this.mPrevSequenceButton.Text = "Prev";
             this.mPrevSequenceButton.UseVisualStyleBackColor = true;
-            this.mPrevSequenceButton.Click += new System.EventHandler(this.mPrevSequenceButton_Click);
             // 
             // mNextSequenceButton
             // 
@@ -199,6 +198,7 @@
             this.Padding = new System.Windows.Forms.Padding(3);
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.DockTop;
             this.Text = "Search";
+            this.Load += new System.EventHandler(this.SearchForm_Load);
             this.mSplitter.Panel1.ResumeLayout(false);
             this.mSplitter.Panel2.ResumeLayout(false);
             this.mSplitter.ResumeLayout(false);

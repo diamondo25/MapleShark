@@ -43,6 +43,8 @@ namespace MapleShark
 
                 HttpWebRequest req = WebRequest.Create("http://direct.craftnet.nl/app_updates/get_keys.php") as HttpWebRequest;
                 req.Proxy = null;
+                req.Timeout = 7000;
+                req.ReadWriteTimeout = 7000;
 
                 using (HttpWebResponse response = req.GetResponse() as HttpWebResponse)
                 {

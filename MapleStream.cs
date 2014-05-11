@@ -5,14 +5,14 @@ using System.Text;
 
 namespace MapleShark
 {
-    public enum TransformLocale
+    [Flags]
+    public enum TransformLocale : int
     {
-        SPECIAL,
-        AES,
-        AES_MCRYPTO,
-        MCRYPTO,
-        OLDEST_MCRYPTO,
-        NONE,
+        AES = 1 << 1,
+        MAPLE_CRYPTO = 1 << 2,
+        OLD_KMS_CRYPTO = 1 << 7,
+        KMS_CRYPTO = 1 << 8,
+        NONE = 0
     }
 
     public sealed class MapleStream
@@ -20,7 +20,7 @@ namespace MapleShark
         private const int DEFAULT_SIZE = 4096;
 
         private bool mOutbound = false;
-        private MapleAES mAES = null;
+        public MapleAES mAES = null;
         private byte[] mBuffer = new byte[DEFAULT_SIZE];
         private int mCursor = 0;
 
@@ -51,21 +51,22 @@ namespace MapleShark
             }
 
             ushort packetSize = mAES.GetHeaderLength(mBuffer, 0, pBuild == 255 && pLocale == 1);
-            if (mCursor < (packetSize + 4)) return null;
+            if (mCursor < (packetSize + 4)) 
+                return null;
             byte[] packetBuffer = new byte[packetSize];
             Buffer.BlockCopy(mBuffer, 4, packetBuffer, 0, packetSize);
 
             bool byteheader = false;
-            if (pBuild == 40 && pLocale == 5)
+            if ((pBuild == 40 && pLocale == 5) || (pBuild == 15 && pLocale == 7))
             { 
                 // WvsBeta
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.MCRYPTO);
+                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.MAPLE_CRYPTO);
                 byteheader = true;
             }
             else if (pLocale == 1 && pBuild == 255)
             { 
                 // KMSB lol
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.OLDEST_MCRYPTO);
+                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.OLD_KMS_CRYPTO);
                 byteheader = true;
                 // Still reset header.
                 mAES.ShiftIVOld();
@@ -73,12 +74,19 @@ namespace MapleShark
             else if (pLocale == 1 || pLocale == 2)
             { 
                 // KMS / KMST
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.SPECIAL);
+                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.KMS_CRYPTO);
+            }
+            else if (pLocale == 6 || pLocale == 4 || pLocale == 3)
+            {
+                // TWMS / CMS / JMS
+                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES);
+
+                mAES.ShiftIV();
             }
             else
             { 
                 // All others lol
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES_MCRYPTO);
+                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES | TransformLocale.MAPLE_CRYPTO);
             }
 
             mCursor -= (packetSize + 4);
@@ -104,13 +112,13 @@ namespace MapleShark
 
         private void Decrypt(byte[] pBuffer, ushort pBuild, byte pLocale, TransformLocale pTransformLocale)
         {
-            if (pTransformLocale == TransformLocale.AES)
+            if ((pTransformLocale & TransformLocale.AES) != 0)
             {
                 mAES.TransformAES(pBuffer);
             }
-            else if (pTransformLocale == TransformLocale.AES_MCRYPTO)
+
+            if ((pTransformLocale & TransformLocale.MAPLE_CRYPTO) != 0)
             {
-                mAES.TransformAES(pBuffer);
                 for (int index1 = 1; index1 <= 6; ++index1)
                 {
                     byte firstFeedback = 0;
@@ -150,59 +158,15 @@ namespace MapleShark
                         }
                     }
                 }
+
+                mAES.ShiftIV();
             }
-            else if (pTransformLocale == TransformLocale.NONE)
-            {
-                // lol
-            }
-            else if (pTransformLocale == TransformLocale.OLDEST_MCRYPTO)
+            
+            if (pTransformLocale == TransformLocale.OLD_KMS_CRYPTO)
             {
                 mAES.TransformOldKMS(pBuffer);
             }
-            else if (pTransformLocale == TransformLocale.MCRYPTO)
-            {
-                mAES.ShiftIV();
-                for (int index1 = 1; index1 <= 6; ++index1)
-                {
-                    byte firstFeedback = 0;
-                    byte secondFeedback = 0;
-                    byte length = (byte)(pBuffer.Length & 0xFF);
-                    if ((index1 % 2) == 0)
-                    {
-                        for (int index2 = 0; index2 < pBuffer.Length; ++index2)
-                        {
-                            byte temp = pBuffer[index2];
-                            temp -= 0x48;
-                            temp = (byte)(~temp);
-                            temp = temp.RollLeft(length & 0xFF);
-                            secondFeedback = temp;
-                            temp ^= firstFeedback;
-                            firstFeedback = secondFeedback;
-                            temp -= length;
-                            temp = temp.RollRight(3);
-                            pBuffer[index2] = temp;
-                            --length;
-                        }
-                    }
-                    else
-                    {
-                        for (int index2 = pBuffer.Length - 1; index2 >= 0; --index2)
-                        {
-                            byte temp = pBuffer[index2];
-                            temp = temp.RollLeft(3);
-                            temp ^= 0x13;
-                            secondFeedback = temp;
-                            temp ^= firstFeedback;
-                            firstFeedback = secondFeedback;
-                            temp -= length;
-                            temp = temp.RollRight(4);
-                            pBuffer[index2] = temp;
-                            --length;
-                        }
-                    }
-                }
-            }
-            else if (pTransformLocale == TransformLocale.SPECIAL)
+            if (pTransformLocale == TransformLocale.KMS_CRYPTO)
             {
                 mAES.TransformKMS(pBuffer);
             }

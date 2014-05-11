@@ -25,7 +25,7 @@ namespace CraftNetTools
 
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(string.Format("http://direct.craftnet.nl/app_updates/updates.php?appname={0}&appver={1}", name, version));
                 req.Proxy = null;
-                req.Timeout = 10000; // 10 seconds
+                req.Timeout = 3000; // 3 seconds
 
                 using (HttpWebResponse response = req.GetResponse() as HttpWebResponse)
                 using (StreamReader sr = new StreamReader(response.GetResponseStream()))

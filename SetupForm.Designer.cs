@@ -45,7 +45,7 @@
             // mCancelButton
             // 
             this.mCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.mCancelButton.Location = new System.Drawing.Point(345, 81);
+            this.mCancelButton.Location = new System.Drawing.Point(341, 84);
             this.mCancelButton.Name = "mCancelButton";
             this.mCancelButton.Size = new System.Drawing.Size(75, 23);
             this.mCancelButton.TabIndex = 14;
@@ -55,7 +55,7 @@
             // mOKButton
             // 
             this.mOKButton.Enabled = false;
-            this.mOKButton.Location = new System.Drawing.Point(196, 81);
+            this.mOKButton.Location = new System.Drawing.Point(201, 84);
             this.mOKButton.Name = "mOKButton";
             this.mOKButton.Size = new System.Drawing.Size(75, 23);
             this.mOKButton.TabIndex = 13;
@@ -65,7 +65,7 @@
             // 
             // mHighPortNumeric
             // 
-            this.mHighPortNumeric.Location = new System.Drawing.Point(320, 39);
+            this.mHighPortNumeric.Location = new System.Drawing.Point(316, 39);
             this.mHighPortNumeric.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -88,7 +88,7 @@
             // 
             // mLowPortNumeric
             // 
-            this.mLowPortNumeric.Location = new System.Drawing.Point(196, 39);
+            this.mLowPortNumeric.Location = new System.Drawing.Point(201, 39);
             this.mLowPortNumeric.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -112,7 +112,7 @@
             // mPortsLabel
             // 
             this.mPortsLabel.AutoSize = true;
-            this.mPortsLabel.Location = new System.Drawing.Point(156, 41);
+            this.mPortsLabel.Location = new System.Drawing.Point(161, 41);
             this.mPortsLabel.Name = "mPortsLabel";
             this.mPortsLabel.Size = new System.Drawing.Size(34, 13);
             this.mPortsLabel.TabIndex = 10;
@@ -122,16 +122,16 @@
             // 
             this.mInterfaceCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.mInterfaceCombo.FormattingEnabled = true;
-            this.mInterfaceCombo.Location = new System.Drawing.Point(196, 12);
+            this.mInterfaceCombo.Location = new System.Drawing.Point(201, 12);
             this.mInterfaceCombo.Name = "mInterfaceCombo";
-            this.mInterfaceCombo.Size = new System.Drawing.Size(224, 21);
+            this.mInterfaceCombo.Size = new System.Drawing.Size(215, 21);
             this.mInterfaceCombo.TabIndex = 9;
             this.mInterfaceCombo.SelectedIndexChanged += new System.EventHandler(this.mInterfaceCombo_SelectedIndexChanged);
             // 
             // mInterfaceLabel
             // 
             this.mInterfaceLabel.AutoSize = true;
-            this.mInterfaceLabel.Location = new System.Drawing.Point(138, 15);
+            this.mInterfaceLabel.Location = new System.Drawing.Point(143, 15);
             this.mInterfaceLabel.Name = "mInterfaceLabel";
             this.mInterfaceLabel.Size = new System.Drawing.Size(52, 13);
             this.mInterfaceLabel.TabIndex = 8;
@@ -153,7 +153,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.mCancelButton;
-            this.ClientSize = new System.Drawing.Size(428, 113);
+            this.ClientSize = new System.Drawing.Size(428, 119);
             this.Controls.Add(this.mMainPicture);
             this.Controls.Add(this.mCancelButton);
             this.Controls.Add(this.mOKButton);

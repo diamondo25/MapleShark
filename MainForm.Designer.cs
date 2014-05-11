@@ -67,6 +67,8 @@
             this.mStopStartButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.mDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.mMenu.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -85,9 +87,11 @@
             // mFileMenu
             // 
             this.mFileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mFileOpenMenu,
             this.mFileImportMenu,
             this.importJavapropertiesFileToolStripMenuItem,
-            this.mFileOpenMenu,
+            this.toolStripSeparator4,
+            this.setupToolStripMenuItem,
             this.mFileSeparatorMenu,
             this.mFileQuit});
             this.mFileMenu.Name = "mFileMenu";
@@ -270,6 +274,18 @@
             this.helpToolStripButton.Text = "Help";
             this.helpToolStripButton.Click += new System.EventHandler(this.helpToolStripButton_Click);
             // 
+            // setupToolStripMenuItem
+            // 
+            this.setupToolStripMenuItem.Name = "setupToolStripMenuItem";
+            this.setupToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.setupToolStripMenuItem.Text = "MapleShark Setup";
+            this.setupToolStripMenuItem.Click += new System.EventHandler(this.setupToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(215, 6);
+            // 
             // mDockPanel
             // 
             this.mDockPanel.ActiveAutoHideContent = null;
@@ -279,9 +295,9 @@
             this.mDockPanel.DockLeftPortion = 0.3D;
             this.mDockPanel.DockRightPortion = 0.3D;
             this.mDockPanel.DockTopPortion = 75D;
-            this.mDockPanel.Location = new System.Drawing.Point(0, 24);
+            this.mDockPanel.Location = new System.Drawing.Point(0, 49);
             this.mDockPanel.Name = "mDockPanel";
-            this.mDockPanel.Size = new System.Drawing.Size(947, 449);
+            this.mDockPanel.Size = new System.Drawing.Size(947, 424);
             dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
             dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -331,11 +347,12 @@
             // 
             // MainForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(947, 473);
-            this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.mDockPanel);
+            this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.mMenu);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -344,8 +361,11 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MapleShark";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
             this.mMenu.ResumeLayout(false);
             this.mMenu.PerformLayout();
             this.toolStrip.ResumeLayout(false);
@@ -380,6 +400,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton helpToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem importJavapropertiesFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }
 

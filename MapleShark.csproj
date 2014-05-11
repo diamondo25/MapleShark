@@ -96,6 +96,7 @@
       <DependentUpon>DataForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Definition.cs" />
+    <Compile Include="DefinitionsContainer.cs" />
     <Compile Include="Docking\AutoHideStripBase.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -206,6 +207,12 @@
     <Compile Include="frmLocale.Designer.cs">
       <DependentUpon>frmLocale.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSplash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSplash.Designer.cs">
+      <DependentUpon>frmSplash.cs</DependentUpon>
+    </Compile>
     <Compile Include="GMSKeys.cs" />
     <Compile Include="HexBox\ByteCollection.cs" />
     <Compile Include="HexBox\DataBlock.cs" />
@@ -245,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmLocale.resx">
       <DependentUpon>frmLocale.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSplash.resx">
+      <DependentUpon>frmSplash.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HexBox\HexBox.resx">
       <DependentUpon>HexBox.cs</DependentUpon>

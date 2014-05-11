@@ -69,7 +69,7 @@ namespace MapleShark
 
         private void mSequenceHex_ByteProviderChanged(object pSender, EventArgs pArgs)
         {
-            mNextSequenceButton.Enabled = mPrevSequenceButton.Enabled = mSequenceHex.ByteProvider.Length > 0;
+            mNextSequenceButton.Enabled/* = mPrevSequenceButton.Enabled*/ = mSequenceHex.ByteProvider.Length > 0;
         }
 
         private void mSequenceHex_KeyPress(object pSender, KeyPressEventArgs pArgs)
@@ -145,41 +145,9 @@ namespace MapleShark
             session.ListView.Focus();
         }
 
-        private void mPrevSequenceButton_Click(object sender, EventArgs e)
+        private void SearchForm_Load(object sender, EventArgs e)
         {
 
-            SessionForm session = DockPanel.ActiveDocument as SessionForm;
-            if (session == null) return;
-            int initialIndex = session.ListView.SelectedIndices.Count == 0 ? 0 : session.ListView.SelectedIndices[0];
-            byte[] pattern = (mSequenceHex.ByteProvider as DynamicByteProvider).Bytes.ToArray();
-            long startIndex = MainForm.DataForm.HexBox.SelectionLength > 0 ? MainForm.DataForm.HexBox.SelectionStart : -1;
-            for (int index = initialIndex - 1; index > 0; --index)
-            {
-                MaplePacket packet = session.ListView.Items[index] as MaplePacket;
-                long searchIndex = startIndex - 1;
-                bool found = false;
-                while (searchIndex >= packet.InnerBuffer.Length - pattern.Length)
-                {
-                    found = true;
-                    for (int patternIndex = 0; found && patternIndex < pattern.Length; ++patternIndex) found = packet.InnerBuffer[searchIndex + patternIndex] == pattern[patternIndex];
-                    if (found) break;
-                    --searchIndex;
-                }
-                if (found)
-                {
-                    session.ListView.SelectedIndices.Clear();
-                    session.ListView.SelectedIndices.Add(index);
-                    packet.EnsureVisible();
-                    MainForm.DataForm.HexBox.SelectionStart = searchIndex;
-                    MainForm.DataForm.HexBox.SelectionLength = pattern.Length;
-                    MainForm.DataForm.HexBox.ScrollByteIntoView();
-                    session.ListView.Focus();
-                    return;
-                }
-                startIndex = -1;
-            }
-            MessageBox.Show("No further sequences found.", "End Of Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            session.ListView.Focus();
         }
     }
 }

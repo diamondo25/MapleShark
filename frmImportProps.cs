@@ -66,7 +66,7 @@ namespace MapleShark
             Config.Instance.Save();
         }
 
-        private void AddOpcode(ushort pBuild, ushort pLocale, bool pOutbound, ushort pOpcode, string pName)
+        private void AddOpcode(ushort pBuild, byte pLocale, bool pOutbound, ushort pOpcode, string pName)
         {
             Definition def = Config.Instance.GetDefinition(pBuild, pLocale, pOutbound, pOpcode);
             if (def == null)
@@ -77,7 +77,6 @@ namespace MapleShark
             else
             {
                 txtLog.AppendText(string.Format("Replacing opcode {1} 0x{0:X4} for {2}\r\n", pOpcode, def.Name, pName));
-                Config.Instance.Definitions.Remove(def);
             }
 
             def.Build = pBuild;
@@ -87,7 +86,7 @@ namespace MapleShark
             def.Name = pName;
             def.Ignore = false;
 
-            Config.Instance.Definitions.Add(def);
+            DefinitionsContainer.Instance.SaveDefinition(def);
         }
     }
 }

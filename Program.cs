@@ -11,20 +11,19 @@ namespace MapleShark
 {
     internal static class Program
     {
-        public const bool CRACKCRYPTO = true;
         [STAThread]
         private static void Main(string[] pArgs)
         {
-            RegisterFileAssociation(".msb", "MapleShark", "MapleShark Binary File", Assembly.GetExecutingAssembly().Location, string.Empty, 0);
+            MainForm.StartupArguments = pArgs;
 
-            CraftNetTools.AppUpdates.Check();
-            GMSKeys.Initialize();
-
-            RuntimeHost.Initialize();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(pArgs));
+
+            if (new frmSplash().ShowDialog() == DialogResult.OK)
+                Application.Run(new MainForm());
         }
+
+
         internal static string AssemblyVersion { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
         internal static string AssemblyCopyright { get { return ((AssemblyCopyrightAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0]).Copyright; } }
 
@@ -56,7 +55,10 @@ namespace MapleShark
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error registering file association: {0}", ex.ToString());
+            }
         }
     }
 }
