@@ -87,6 +87,18 @@ namespace MapleShark
                     break;
                 }
             }
+            if (mDevice == null)
+            {
+                // Well shit...
+
+                MessageBox.Show("Invalid configuration. Please re-setup your MapleShark configuration.", "MapleShark", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (ShowSetupForm() != DialogResult.OK)
+                {
+                    Close();
+                    return;
+                }
+                SetupAdapter();
+            }
 
             try
             {
@@ -102,7 +114,7 @@ namespace MapleShark
 
         private void MainForm_Load(object pSender, EventArgs pArgs)
         {
-            if (!System.IO.File.Exists("Config.xml"))
+            if (!Config.Instance.LoadedFromFile)
             {
                 if (ShowSetupForm() != DialogResult.OK)
                 {

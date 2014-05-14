@@ -14,6 +14,9 @@ namespace MapleShark
         [System.Obsolete]
         public List<Definition> Definitions = new List<Definition>();
 
+        [XmlIgnore]
+        public bool LoadedFromFile = false;
+
         private static Config sInstance = null;
         internal static Config Instance
         {
@@ -32,6 +35,7 @@ namespace MapleShark
                         {
                             XmlSerializer xs = new XmlSerializer(typeof(Config));
                             sInstance = xs.Deserialize(xr) as Config;
+                            sInstance.LoadedFromFile = true;
                         }
                     }
                 }
