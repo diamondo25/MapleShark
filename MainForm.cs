@@ -102,7 +102,7 @@ namespace MapleShark
 
         private void MainForm_Load(object pSender, EventArgs pArgs)
         {
-            if (StartupArguments.Length == 0)
+            if (!System.IO.File.Exists("Config.xml"))
             {
                 if (ShowSetupForm() != DialogResult.OK)
                 {
