@@ -31,17 +31,17 @@
 	string AddPaddedString(int length)
 	void AddField(int length)
 
-	//If use varible and function without given name to structure
-	//Just use AddComment With length
 	/*Example
 	* job = AddShort();
 	* AddComment("JOB : "+job,2); // short = 2
+	* Q : If you need why don't use AddShort with given name to structure("JOB");
+	* A : Sometime you need use value of packet for new function.
+	*     If you use AddShort with give name (no announce varriable).When you use varible Mapleshark will Add duplicate structure.
+	*	Picture : http://i.imgur.com/G9EMJIp.png
 	*/ 
+	//If use varible and function without given name to structure
+	//Just use AddComment With length.
 	void AddComment(string pComment,int pLength)
-
-
-	void StartNodeWithVariable(string name,int length)
-	//Start node with missing highlight at dataform
 
 	/*Example
 	* a = AddByte(); //get value without name
@@ -53,6 +53,9 @@
 	* StartNodeWithVariable("ID : "+id+" Name : "+name,17) //Highlight dataform with 17 byte for variable [id = 4, name = 13 | 13+4 = 17]
 	* EndNode(false);
 	*/
+	//Start node with missing highlight at dataform
+	void StartNodeWithVariable(string name,int length)
+	
 
 __________________________________________________________________________
 Below update by Diamondo25
