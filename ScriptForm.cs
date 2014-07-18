@@ -15,7 +15,6 @@ namespace MapleShark
     {
         private string mPath = "";
         private MaplePacket mPacket = null;
-        private StructureForm mStructureForm = new StructureForm();
 
         public ScriptForm(string pPath, MaplePacket pPacket)
         {
@@ -29,7 +28,6 @@ namespace MapleShark
         }
 
         internal MaplePacket Packet { get { return mPacket; } }
-        public StructureForm StructureForm { get { return mStructureForm; } }
 
         private void ScriptForm_Load(object pSender, EventArgs pArgs)
         {
