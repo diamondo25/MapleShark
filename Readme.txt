@@ -34,9 +34,9 @@
 	/*Example
 	* job = AddShort();
 	* AddComment("JOB : "+job,2); // short = 2
-	* Q : If you need why don't use AddShort with given name to structure("JOB");
+	* Q : Why don't use AddShort with given name to structure("JOB");
 	* A : Sometime you need use value of packet for new function.
-	*     If you use AddShort with give name (no announce varriable).When you use varible Mapleshark will Add duplicate structure.
+	*     If you use AddShort with give name. When you use varible Mapleshark will Add duplicate structure.
 	*	Picture : http://i.imgur.com/G9EMJIp.png
 	*/ 
 	//If use varible and function without given name to structure
