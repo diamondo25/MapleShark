@@ -1,4 +1,54 @@
-﻿Interface
+﻿Update by KururuLABO
+-Mapleshark script dialog interface
+-Save script and refresh structure without close form
+-Export script function
+-Mapleshark script menu button
+	-Import button (Ctrl+I)
+	-Export button (Ctrl+E)
+	-Save button(Ctrl+S)
+	-Exit button(Ctrl+X)
+-All structure still have value suffix
+	/*Example 
+	* AddInt("ID");
+	* On structure panel
+	* Before : ID
+	* ID
+	* After  : ID : Variable value 
+	* ID : 251413 
+	*/
+-Add more functions for script (useful for variable)
+	//Get value without given name to structure
+	byte AddByte()
+	sbyte AddSByte()
+	ushort AddUShort()
+	short AddShort()
+	uint AddUInt()
+	int AddInt()
+	float AddFloat()
+	double AddDouble()
+	bool AddBool()
+	long AddLong()
+	string AddPaddedString(int length)
+	void AddField(int length)
+
+	void StartNodeWithVariable(string name,int length)
+	//Start node with missing highlight at dataform
+
+	/*Example
+	* a = AddByte(); //get value without name
+	* StartNodeWithVariable("Test "+a,1)
+	* EndNode(false);
+	* --------or------------
+	* id = AddInt();
+	* name = AddPaddedString(13); //get name [name length = 13]
+	* StartNodeWithVariable("ID : "+id+" Name : "+name,17) //Highlight dataform with 17 byte for variable [id = 4, name = 13 | 13+4 = 17]
+	* EndNode(false);
+	*/
+
+__________________________________________________________________________
+Below update by Diamondo25
+
+Interface
 =========
 
 Reserved.
@@ -82,4 +132,6 @@ void Write(string file, string line)
 int Remaining()
 
   Returns the number of bytes remaining unprocessed in the packet.
+
+
 
