@@ -31,6 +31,15 @@
 	string AddPaddedString(int length)
 	void AddField(int length)
 
+	//If use varible and function without given name to structure
+	//Just use AddComment With length
+	/*Example
+	* job = AddShort();
+	* AddComment("JOB : "+job,2); // short = 2
+	*/ 
+	void AddComment(string pComment,int pLength)
+
+
 	void StartNodeWithVariable(string name,int length)
 	//Start node with missing highlight at dataform
 
