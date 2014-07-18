@@ -1757,6 +1757,17 @@ namespace Alsing.Windows.Forms
 
             swr.Close();
         }
+        public void Export(string path)
+        {
+            string text = Document.Text;
+            var swr = new StreamWriter(path);
+
+            swr.Write(text);
+
+            swr.Flush();
+
+            swr.Close();
+        }
 
         public void Open(string filename)
         {
