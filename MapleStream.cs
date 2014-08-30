@@ -76,9 +76,9 @@ namespace MapleShark
                 // KMS / KMST
                 Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.KMS_CRYPTO);
             }
-            else if (pLocale == 6 || pLocale == 4 || pLocale == 3 || (pLocale == 8 && pBuild >= 149))
+            else if (pLocale == 6 || pLocale == 4 || pLocale == 5 || pLocale == 3 || (pLocale == 8 && pBuild >= 149))
             {
-                // TWMS / CMS / JMS / GMS (>= 149)
+                // TWMS / CMS / CMST / JMS / GMS (>= 149)
                 Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES);
 
                 mAES.ShiftIV();
