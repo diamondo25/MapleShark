@@ -564,7 +564,7 @@ namespace MapleShark
             MainForm.StructureForm.ParseMaplePacket(packet);
             Activate();
         }
-   
+
         private void mViewRefreshMenu_Click(object pSender, EventArgs pArgs) { RefreshPackets(); }
         private void mViewOutboundMenu_CheckedChanged(object pSender, EventArgs pArgs) { RefreshPackets(); }
         private void mViewInboundMenu_CheckedChanged(object pSender, EventArgs pArgs) { RefreshPackets(); }
@@ -587,7 +587,6 @@ namespace MapleShark
             
             ScriptForm script = new ScriptForm(scriptPath, packet);
             script.FormClosed += Script_FormClosed;
-            script.BackColorChanged += Script_FormSave;
             script.Show(DockPanel, new Rectangle(MainForm.Location, new Size(600, 300)));
         }
 
@@ -599,13 +598,6 @@ namespace MapleShark
             Activate();
         }
 
-        private void Script_FormSave(object pSender, EventArgs pArgs)
-        {
-            ScriptForm script = pSender as ScriptForm;
-            script.Packet.Selected = true;
-            MainForm.StructureForm.ParseMaplePacket(script.Packet);
-            //Activate();
-        }
         bool openingContextMenu = false;
         private void mPacketContextMenu_Opening(object pSender, CancelEventArgs pArgs)
         {
