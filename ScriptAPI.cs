@@ -38,21 +38,5 @@ namespace MapleShark
 			}
         }
         public long Remaining() { return mStructure.APIRemaining(); }
-
-        //Below add by KururuLABO
-        public string AddPaddedString(int pLength) { return mStructure.APIAddPaddedString(pLength); }
-        public void AddComment(string pComment,int pLength) { mStructure.APIAddComment(pComment,pLength); }
-        public void StartNodeWithVariable(string pName, int pLength) { mStructure.StartNodeWithVariable(pName, pLength); }
-        public long AddByte() { return mStructure.APIAddByte(); }
-        public long AddSByte() { return mStructure.APIAddSByte(); }
-        public long AddUShort() { return mStructure.APIAddUShort(); }
-        public long AddShort() { return mStructure.APIAddShort(); }
-        public long AddUInt() { return mStructure.APIAddUInt(); }
-        public long AddInt() { return mStructure.APIAddInt(); }
-        public long AddLong() { return mStructure.APIAddLong(); }
-        public double AddFloat() { return mStructure.APIAddFloat(); }
-        public double AddDouble() { return mStructure.APIAddDouble(); }
-        public bool AddBool() { return mStructure.APIAddBool(); }
-
     }
 }
