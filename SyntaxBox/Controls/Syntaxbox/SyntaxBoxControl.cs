@@ -167,7 +167,7 @@ namespace Alsing.Windows.Forms
         private bool _ShowEOLMarker;
 
         [Category("Appearance"), Description(
-            "Determines if a ¶ should be displayed at the end of a line")
+            "Determines if a ?should be displayed at the end of a line")
         ]
         [DefaultValue(false)]
         public bool ShowEOLMarker

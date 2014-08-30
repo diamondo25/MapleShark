@@ -24,9 +24,9 @@ namespace MapleShark
         private byte[] mBuffer = new byte[DEFAULT_SIZE];
         private int mCursor = 0;
 
-        public MapleStream(bool pOutbound, ushort pBuild, byte pLocale, byte[] pIV) { 
-            mOutbound = pOutbound; 
-            mAES = new MapleAES(pBuild, pLocale, pIV);
+        public MapleStream(bool pOutbound, ushort pBuild, byte pLocale, byte[] pIV, byte pSubVersion) { 
+            mOutbound = pOutbound;
+            mAES = new MapleAES(pBuild, pLocale, pIV, pSubVersion);
         }
 
         public void Append(byte[] pBuffer) { Append(pBuffer, 0, pBuffer.Length); }

@@ -5,12 +5,12 @@ namespace MapleShark
 {
     public sealed class MapleAES
     {
-        private static byte[] sSecretKey = new byte[] {
+        private readonly static byte[] sSecretKey = new byte[] {
             0x13, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0xB4, 0x00, 0x00, 0x00,
             0x1B, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00 
         };
 
-        private static byte[] sShiftKey = new byte[] {
+        private readonly static byte[] sShiftKey = new byte[] {
             0xEC, 0x3F, 0x77, 0xA4, 0x45, 0xD0, 0x71, 0xBF, 0xB7, 0x98, 0x20, 0xFC, 0x4B, 0xE9, 0xB3, 0xE1,
             0x5C, 0x22, 0xF7, 0x0C, 0x44, 0x1B, 0x81, 0xBD, 0x63, 0x8D, 0xD4, 0xC3, 0xF2, 0x10, 0x19, 0xE0,
             0xFB, 0xA1, 0x6E, 0x66, 0xEA, 0xAE, 0xD6, 0xCE, 0x06, 0x18, 0x4E, 0xEB, 0x78, 0x95, 0xDB, 0xBA,
@@ -34,25 +34,27 @@ namespace MapleShark
         private ICryptoTransform mTransformer = null;
         public byte[] mIV { get; private set; }
 
-        internal MapleAES(ushort pBuild, byte pLocale, byte[] pIV)
+        internal MapleAES(ushort pBuild, byte pLocale, byte[] pIV, byte pSubVersion)
         {
             mBuild = pBuild;
-            if ((short)pBuild < 0) { // Second one
+            if ((short)pBuild < 0)
                 pBuild = (ushort)(0xFFFF - pBuild);
-            }
+
             if (pLocale == 8 && pBuild >= 118) // GMS uses random keys since 118!
-                mAES.Key = GMSKeys.GetKeyForVersion(pBuild);
+                mAES.Key = GMSKeys.GetKeyForVersion(pBuild, pSubVersion);
             else
                 mAES.Key = sSecretKey;
+
             mAES.Mode = CipherMode.ECB;
             mAES.Padding = PaddingMode.PKCS7;
             mTransformer = mAES.CreateEncryptor();
             mIV = pIV;
         }
 
-		public void ShiftIVOld() {
-			mIV = BitConverter.GetBytes(214013 * BitConverter.ToUInt32(mIV, 0) + 2531011);
-		}
+        public void ShiftIVOld()
+        {
+            mIV = BitConverter.GetBytes(214013 * BitConverter.ToUInt32(mIV, 0) + 2531011);
+        }
 
         public bool ConfirmHeader(byte[] pBuffer, int pStart)
         {
@@ -60,11 +62,13 @@ namespace MapleShark
                    (pBuffer[pStart + 1] ^ mIV[3]) == ((mBuild >> 8) & 0xFF);
             return b;
         }
+
         public ushort GetHeaderLength(byte[] pBuffer, int pStart, bool pOldHeader)
         {
-			if (pOldHeader) {
-				return BitConverter.ToUInt16(pBuffer, pStart + 2);
-			}
+            if (pOldHeader)
+            {
+                return BitConverter.ToUInt16(pBuffer, pStart + 2);
+            }
 
             int length = (int)pBuffer[pStart] |
                          (int)(pBuffer[pStart + 1] << 8) |
@@ -73,6 +77,7 @@ namespace MapleShark
             length = (length >> 16) ^ (length & 0xFFFF);
             return (ushort)length;
         }
+
         public void GenerateHeader(byte[] pBuffer)
         {
             ushort build = (ushort)(((mBuild >> 8) & 0xFF) | ((mBuild << 8) & 0xFF00));
@@ -85,125 +90,83 @@ namespace MapleShark
             pBuffer[3] = (byte)length;
         }
 
-		public void TransformKMS(byte[] pBuffer) {
-			byte[] oudeIV = new byte[4];
-			Buffer.BlockCopy(mIV, 0, oudeIV, 0, 4);
-			for (int i = 0; i < pBuffer.Length; i++) {
-				byte v7 = (byte)(pBuffer[i] ^ sShiftKey[mIV[0]]);
-				byte v8 = (byte)((v7 >> 1) & 0x55 | 2 * (v7 & 0xD5));
-				pBuffer[i] = (byte)(0x10 * v8 | (v8 >> 4));
-				Morph(pBuffer[i], mIV);
-			}
+        public void TransformKMS(byte[] pBuffer)
+        {
+            byte[] oudeIV = new byte[4];
+            Buffer.BlockCopy(mIV, 0, oudeIV, 0, 4);
+            for (int i = 0; i < pBuffer.Length; i++)
+            {
+                byte v7 = (byte)(pBuffer[i] ^ sShiftKey[mIV[0]]);
+                byte v8 = (byte)((v7 >> 1) & 0x55 | 2 * (v7 & 0xD5));
+                pBuffer[i] = (byte)(0x10 * v8 | (v8 >> 4));
+                Morph(pBuffer[i], mIV);
+            }
 
-			ShiftIV(oudeIV);
-		}
+            ShiftIV(oudeIV);
+        }
 
         // Done by csproj
         public void TransformOldKMS(byte[] pBuffer)
         {
             for (int i = 0; i < pBuffer.Length; i++)
-            {
                 pBuffer[i] = (byte)(16 * (mIV[0] ^ pBuffer[i]) | ((byte)(mIV[0] ^ pBuffer[i]) >> 4));
-            }
+
             ShiftIVOld();
         }
 
-		public void TransformAES(byte[] pBuffer) {
-			int remaining = pBuffer.Length;
-			int length = 0x5B0;
-			int start = 0;
-			byte[] realIV = new byte[mIV.Length * 4];
-			while (remaining > 0) {
-				for (int index = 0; index < realIV.Length; ++index) realIV[index] = mIV[index % 4];
-
-				if (remaining < length) length = remaining;
-				for (int index = start; index < (start + length); ++index) {
-					if (((index - start) % realIV.Length) == 0) {
-						byte[] tempIV = new byte[realIV.Length];
-						mTransformer.TransformBlock(realIV, 0, realIV.Length, tempIV, 0);
-						Buffer.BlockCopy(tempIV, 0, realIV, 0, realIV.Length);
-						//realIV = mTransformer.TransformFinalBlock(realIV, 0, realIV.Length);
-					}
-					pBuffer[index] ^= realIV[(index - start) % realIV.Length];
-				}
-				start += length;
-				remaining -= length;
-				length = 0x5B4;
-			}
-		}
-
-		private void Morph(byte inputByte, byte[] start) {
-			byte a = start[1];
-			byte b = a;
-			uint c, d;
-			b = sShiftKey[b];
-			b -= inputByte;
-			start[0] += b;
-			b = start[2];
-			b ^= sShiftKey[inputByte];
-			a -= b;
-			start[1] = a;
-			a = start[3];
-			b = a;
-			a -= start[0];
-			b = sShiftKey[b];
-			b += inputByte;
-			b ^= start[2];
-			start[2] = b;
-			a += sShiftKey[inputByte];
-			start[3] = a;
-
-			c = (uint)(start[0] + start[1] * 0x100 + start[2] * 0x10000 + start[3] * 0x1000000);
-			d = c;
-			c >>= 0x1D;
-			d <<= 0x03;
-			c |= d;
-			start[0] = (byte)(c % 0x100);
-			c /= 0x100;
-			start[1] = (byte)(c % 0x100);
-			c /= 0x100;
-			start[2] = (byte)(c % 0x100);
-			start[3] = (byte)(c / 0x100);
-		}
-
-        public void ShiftIV()
+        public void TransformAES(byte[] pBuffer)
         {
-            ShiftIV(mIV);
+            int remaining = pBuffer.Length;
+            int length = 0x5B0;
+            int start = 0;
+            byte[] realIV = new byte[mIV.Length * 4];
+            while (remaining > 0)
+            {
+                for (int index = 0; index < realIV.Length; ++index) realIV[index] = mIV[index % 4];
+
+                if (remaining < length) length = remaining;
+                for (int index = start; index < (start + length); ++index)
+                {
+                    if (((index - start) % realIV.Length) == 0)
+                    {
+                        mTransformer.TransformBlock(realIV, 0, realIV.Length, realIV, 0);
+                    }
+
+                    pBuffer[index] ^= realIV[(index - start) % realIV.Length];
+                }
+                start += length;
+                remaining -= length;
+                length = 0x5B4;
+            }
         }
 
-        private void ShiftIV(byte[] pOldIV)
+        public void ShiftIV(byte[] pOldIV = null)
         {
+            if (pOldIV == null) pOldIV = mIV;
+
             byte[] newIV = new byte[] { 0xF2, 0x53, 0x50, 0xC6 };
-            for (int index = 0; index < mIV.Length; ++index)
-            {
-                byte temp1 = newIV[1];
-                byte temp2 = sShiftKey[temp1];
-				byte temp3 = pOldIV[index];
-                temp2 -= temp3;
-                newIV[0] += temp2;
-                temp2 = newIV[2];
-                temp2 ^= sShiftKey[temp3];
-                temp1 -= temp2;
-                newIV[1] = temp1;
-                temp1 = newIV[3];
-                temp2 = temp1;
-                temp1 -= newIV[0];
-                temp2 = sShiftKey[temp2];
-                temp2 += temp3;
-                temp2 ^= newIV[2];
-                newIV[2] = temp2;
-                temp1 += sShiftKey[temp3];
-                newIV[3] = temp1;
-                uint result1 = (uint)newIV[0] | ((uint)newIV[1] << 8) | ((uint)newIV[2] << 16) | ((uint)newIV[3] << 24);
-                uint result2 = result1 >> 0x1D;
-                result1 <<= 3;
-                result2 |= result1;
-                newIV[0] = (byte)(result2 & 0xFF);
-                newIV[1] = (byte)((result2 >> 8) & 0xFF);
-                newIV[2] = (byte)((result2 >> 16) & 0xFF);
-                newIV[3] = (byte)((result2 >> 24) & 0xFF);
-            }
+            for (int i = 0; i < 4; ++i)
+                Morph(pOldIV[i], newIV);
             Buffer.BlockCopy(newIV, 0, mIV, 0, mIV.Length);
+        }
+
+        public static void Morph(byte pValue, byte[] pIV)
+        {
+            byte input = pValue;
+            byte tableInput = sShiftKey[input];
+            pIV[0] += (byte)(sShiftKey[pIV[1]] - input);
+            pIV[1] -= (byte)(pIV[2] ^ tableInput);
+            pIV[2] ^= (byte)(sShiftKey[pIV[3]] + input);
+            pIV[3] -= (byte)(pIV[0] - tableInput);
+
+            uint val = BitConverter.ToUInt32(pIV, 0);
+            uint val2 = val >> 0x1D;
+            val <<= 0x03;
+            val2 |= val;
+            pIV[0] = (byte)(val2 & 0xFF);
+            pIV[1] = (byte)((val2 >> 8) & 0xFF);
+            pIV[2] = (byte)((val2 >> 16) & 0xFF);
+            pIV[3] = (byte)((val2 >> 24) & 0xFF);
         }
     }
 }

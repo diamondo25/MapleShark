@@ -17,7 +17,7 @@ namespace MapleShark
 
         internal MaplePacket(DateTime pTimestamp, bool pOutbound, ushort pBuild, ushort pLocale, ushort pOpcode, string pName, byte[] pBuffer)
             : base(new string[] {
-                pTimestamp.ToString() + "." + pTimestamp.Millisecond,//((pTimestamp - new DateTime(1970, 1, 1)).Ticks / 10000 / 1000).ToString("X8"),
+                pTimestamp.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                 pOutbound ? "Outbound" : "Inbound",
                 pBuffer.Length.ToString(),
                 "0x" + pOpcode.ToString("X4"),

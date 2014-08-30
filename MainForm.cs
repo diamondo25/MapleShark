@@ -13,6 +13,9 @@ using System.Threading;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+using System.IO;
+using System.Text.RegularExpressions;
+
 namespace MapleShark
 {
     public partial class MainForm : Form
@@ -87,6 +90,7 @@ namespace MapleShark
                     break;
                 }
             }
+
             if (mDevice == null)
             {
                 // Well shit...
@@ -396,6 +400,7 @@ namespace MapleShark
                     {
                         case ".msb":
                         case ".pcap":
+                        case ".txt":
                             okay = true;
                             continue;
                     }
@@ -431,6 +436,11 @@ namespace MapleShark
                             device = new CaptureFileReaderDevice(file);
                             device.Open();
                             ParseImportedFile();
+                            break;
+                        }
+                    case ".txt":
+                        {
+                            ReadMSnifferFile(file);
                             break;
                         }
                 }
@@ -476,6 +486,50 @@ namespace MapleShark
 
                 if (lastTimerState) mTimer.Enabled = true;
             }
+        }
+
+        private void importMSnifferToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "Select MSniffer logfile";
+            ofd.Filter = "*.*";
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                ReadMSnifferFile(ofd.FileName);
+        }
+
+        private void ReadMSnifferFile(string filename)
+        {
+            SessionForm currentSession = null;
+            Regex captureRegex = new Regex(@"Capturing MapleStory version (\d+) on ([0-9\.]+):(\d+) with unknown ""(.*)"".*");
+            using (StreamReader sr = new StreamReader(filename))
+            {
+                while (!sr.EndOfStream)
+                {
+                    string line = sr.ReadLine();
+                    if (line == "" || (line[0] != '[' && line[0] != 'C')) continue;
+
+                    if (line[0] == 'C')
+                    {
+                        // Most likely capturing text
+                        var matches = captureRegex.Match(line);
+                        if (matches.Captures.Count == 0) continue;
+                        
+                        Console.WriteLine("Version: {0}.{1} IP {2} Port {3}", matches.Groups[1].Value, matches.Groups[4].Value, matches.Groups[2].Value, matches.Groups[3].Value);
+
+                        if (currentSession != null)
+                            currentSession.Show(mDockPanel, DockState.Document);
+
+                        currentSession = NewSession();
+                        currentSession.SetMapleInfo(ushort.Parse(matches.Groups[1].Value), matches.Groups[4].Value, 8, matches.Groups[2].Value, ushort.Parse(matches.Groups[3].Value));
+
+                    }
+                    else if (line[0] == '[' && currentSession != null)
+                        currentSession.ParseMSnifferLine(line);
+                }
+            }
+
+            if (currentSession != null)
+                currentSession.Show(mDockPanel, DockState.Document);
         }
     }
 }

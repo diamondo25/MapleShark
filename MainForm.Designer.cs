@@ -47,9 +47,11 @@
             WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
             this.mMenu = new System.Windows.Forms.MenuStrip();
             this.mFileMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.mFileOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileImportMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.importJavapropertiesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mFileOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileSeparatorMenu = new System.Windows.Forms.ToolStripSeparator();
             this.mFileQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.mViewMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,9 +69,8 @@
             this.mStopStartButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.mDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.importMSnifferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenu.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +91,7 @@
             this.mFileOpenMenu,
             this.mFileImportMenu,
             this.importJavapropertiesFileToolStripMenuItem,
+            this.importMSnifferToolStripMenuItem,
             this.toolStripSeparator4,
             this.setupToolStripMenuItem,
             this.mFileSeparatorMenu,
@@ -97,6 +99,14 @@
             this.mFileMenu.Name = "mFileMenu";
             this.mFileMenu.Size = new System.Drawing.Size(37, 20);
             this.mFileMenu.Text = "&File";
+            // 
+            // mFileOpenMenu
+            // 
+            this.mFileOpenMenu.Name = "mFileOpenMenu";
+            this.mFileOpenMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.mFileOpenMenu.Size = new System.Drawing.Size(218, 22);
+            this.mFileOpenMenu.Text = "&Open";
+            this.mFileOpenMenu.Click += new System.EventHandler(this.mFileOpenMenu_Click);
             // 
             // mFileImportMenu
             // 
@@ -113,13 +123,17 @@
             this.importJavapropertiesFileToolStripMenuItem.Text = "Import Java *.properties file";
             this.importJavapropertiesFileToolStripMenuItem.Click += new System.EventHandler(this.importJavapropertiesFileToolStripMenuItem_Click);
             // 
-            // mFileOpenMenu
+            // toolStripSeparator4
             // 
-            this.mFileOpenMenu.Name = "mFileOpenMenu";
-            this.mFileOpenMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mFileOpenMenu.Size = new System.Drawing.Size(218, 22);
-            this.mFileOpenMenu.Text = "&Open";
-            this.mFileOpenMenu.Click += new System.EventHandler(this.mFileOpenMenu_Click);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(215, 6);
+            // 
+            // setupToolStripMenuItem
+            // 
+            this.setupToolStripMenuItem.Name = "setupToolStripMenuItem";
+            this.setupToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.setupToolStripMenuItem.Text = "MapleShark Setup";
+            this.setupToolStripMenuItem.Click += new System.EventHandler(this.setupToolStripMenuItem_Click);
             // 
             // mFileSeparatorMenu
             // 
@@ -274,18 +288,6 @@
             this.helpToolStripButton.Text = "Help";
             this.helpToolStripButton.Click += new System.EventHandler(this.helpToolStripButton_Click);
             // 
-            // setupToolStripMenuItem
-            // 
-            this.setupToolStripMenuItem.Name = "setupToolStripMenuItem";
-            this.setupToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.setupToolStripMenuItem.Text = "MapleShark Setup";
-            this.setupToolStripMenuItem.Click += new System.EventHandler(this.setupToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(215, 6);
-            // 
             // mDockPanel
             // 
             this.mDockPanel.ActiveAutoHideContent = null;
@@ -345,6 +347,13 @@
             this.mDockPanel.TabIndex = 4;
             this.mDockPanel.ActiveDocumentChanged += new System.EventHandler(this.mDockPanel_ActiveDocumentChanged);
             // 
+            // importMSnifferToolStripMenuItem
+            // 
+            this.importMSnifferToolStripMenuItem.Name = "importMSnifferToolStripMenuItem";
+            this.importMSnifferToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.importMSnifferToolStripMenuItem.Text = "Import MSniffer";
+            this.importMSnifferToolStripMenuItem.Click += new System.EventHandler(this.importMSnifferToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -402,6 +411,7 @@
         private System.Windows.Forms.ToolStripMenuItem importJavapropertiesFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setupToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem importMSnifferToolStripMenuItem;
     }
 }
 

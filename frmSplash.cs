@@ -47,9 +47,6 @@ namespace MapleShark
             var x = Math.Sin(tmp) * 90;
             x += centerX;
 
-            //var y = Math.Sin(time / 260.0f) * 50;
-            //y += centerY;
-
             var y = pic.Location.Y;
 
             pic.Location = new Point((int)x, (int)y);
@@ -95,7 +92,6 @@ namespace MapleShark
 
             initialisator.ReportProgress(0, "Registering .msb extension");
             RegisterFileAssociation(".msb", "MapleShark", "MapleShark Binary File", filepath, string.Empty, 0);
-
         }
 
 
@@ -110,18 +106,16 @@ namespace MapleShark
                     using (RegistryKey key = Registry.ClassesRoot.OpenSubKey(pExtension)) if (key == null) using (RegistryKey extKey = Registry.ClassesRoot.CreateSubKey(pExtension)) extKey.SetValue(string.Empty, pProgramId);
 
                     using (RegistryKey extKey = Registry.ClassesRoot.OpenSubKey(pExtension))
+                    using (RegistryKey key = extKey.OpenSubKey(pProgramId))
                     {
-                        using (RegistryKey key = extKey.OpenSubKey(pProgramId))
+                        if (key == null)
                         {
-                            if (key == null)
+                            using (RegistryKey progIdKey = Registry.ClassesRoot.CreateSubKey(pProgramId))
                             {
-                                using (RegistryKey progIdKey = Registry.ClassesRoot.CreateSubKey(pProgramId))
-                                {
-                                    progIdKey.SetValue(string.Empty, pDescription);
-                                    using (RegistryKey defaultIcon = progIdKey.CreateSubKey("DefaultIcon")) defaultIcon.SetValue(string.Empty, String.Format("\"{0}\",{1}", pIconPath, pIconIndex));
+                                progIdKey.SetValue(string.Empty, pDescription);
+                                using (RegistryKey defaultIcon = progIdKey.CreateSubKey("DefaultIcon")) defaultIcon.SetValue(string.Empty, String.Format("\"{0}\",{1}", pIconPath, pIconIndex));
 
-                                    using (RegistryKey command = progIdKey.CreateSubKey("shell\\open\\command")) command.SetValue(string.Empty, String.Format("\"{0}\" \"%1\"", pEXE));
-                                }
+                                using (RegistryKey command = progIdKey.CreateSubKey("shell\\open\\command")) command.SetValue(string.Empty, String.Format("\"{0}\" \"%1\"", pEXE));
                             }
                         }
                     }

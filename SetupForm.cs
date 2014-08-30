@@ -20,6 +20,7 @@ namespace MapleShark
             Text = "MapleShark " + Program.AssemblyVersion + ", " + Program.AssemblyCopyright;
             bool selected = false;
             int localAreaConnection = -1;
+
             foreach (LibPcapLiveDevice device in LibPcapLiveDeviceList.Instance)
             {
                 if (!device.Interface.Addresses.Exists(a => a != null && a.Addr != null && a.Addr.ipAddress != null)) continue;
@@ -27,23 +28,11 @@ namespace MapleShark
                 if (device.Interface.FriendlyName == "Local Area Connection") localAreaConnection = index;
                 if (!selected && (selected = (device.Interface.FriendlyName == Config.Instance.Interface))) mInterfaceCombo.SelectedIndex = index;
             }
+
             if (!selected && localAreaConnection >= 0) mInterfaceCombo.SelectedIndex = localAreaConnection;
             else if (!selected && mInterfaceCombo.Items.Count > 0) mInterfaceCombo.SelectedIndex = 0;
             mLowPortNumeric.Value = Config.Instance.LowPort;
             mHighPortNumeric.Value = Config.Instance.HighPort;
-        }
-
-        private void SetupForm_Load(object pSender, EventArgs pArgs)
-        {
-            if (mInterfaceCombo.Items.Count == 0)
-            {
-                if (MessageBox.Show(this, "There are no usable interfaces. Did you install WinPcap? If you did, then try to run MapleShark in Administrator Mode, else press 'No' to go to the install page of WinPcap.", "Interface Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error) == System.Windows.Forms.DialogResult.No)
-                {
-                    System.Diagnostics.Process.Start("http://www.winpcap.org/install/default.htm");
-                }
-                Close();
-                return;
-            }
         }
 
         private void mInterfaceCombo_SelectedIndexChanged(object pSender, EventArgs pArgs)
@@ -69,6 +58,11 @@ namespace MapleShark
             Config.Instance.Save();
 
             DialogResult = DialogResult.OK;
+        }
+
+        private void SetupForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

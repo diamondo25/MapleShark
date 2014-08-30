@@ -26,7 +26,7 @@ namespace MapleShark
         public void RefreshOpcodes(bool pReselect)
         {
             SessionForm session = DockPanel.ActiveDocument as SessionForm;
-            Pair<bool, ushort> selected = pReselect && session != null && mOpcodeCombo.SelectedIndex >= 0 ? session.Opcodes[mOpcodeCombo.SelectedIndex] : null;
+            Pair<bool, ushort> selected = pReselect && session != null && mOpcodeCombo.SelectedIndex >= 0 && session.Opcodes.Count > mOpcodeCombo.SelectedIndex ? session.Opcodes[mOpcodeCombo.SelectedIndex] : null;
             mOpcodeCombo.Items.Clear();
             if (session == null) return;
             session.UpdateOpcodeList();

@@ -40,6 +40,7 @@
             this.mPacketContextNameBox = new System.Windows.Forms.ToolStripTextBox();
             this.mPacketContextSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.mPacketContextIgnoreMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.removePacketFromSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenu = new System.Windows.Forms.MenuStrip();
             this.mMainFileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileSeparatorMenu = new System.Windows.Forms.ToolStripSeparator();
@@ -62,6 +63,14 @@
             this.removeLoggedPacketsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mSaveDialog = new System.Windows.Forms.SaveFileDialog();
             this.mExportDialog = new System.Windows.Forms.SaveFileDialog();
+            this.allBeforeThisOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allAfterThisOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.thisPacketOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.onlyVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onlyVisibleToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.allToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mPacketContextMenu.SuspendLayout();
             this.mMenu.SuspendLayout();
             this.SuspendLayout();
@@ -80,10 +89,10 @@
             this.mPacketList.FullRowSelect = true;
             this.mPacketList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.mPacketList.HideSelection = false;
-            this.mPacketList.Location = new System.Drawing.Point(0, 24);
+            this.mPacketList.Location = new System.Drawing.Point(0, 0);
             this.mPacketList.MultiSelect = false;
             this.mPacketList.Name = "mPacketList";
-            this.mPacketList.Size = new System.Drawing.Size(611, 427);
+            this.mPacketList.Size = new System.Drawing.Size(752, 451);
             this.mPacketList.TabIndex = 0;
             this.mPacketList.UseCompatibleStateImageBehavior = false;
             this.mPacketList.View = System.Windows.Forms.View.Details;
@@ -93,7 +102,7 @@
             // mTimestampColumn
             // 
             this.mTimestampColumn.Text = "Timestamp";
-            this.mTimestampColumn.Width = 152;
+            this.mTimestampColumn.Width = 175;
             // 
             // mDirectionColumn
             // 
@@ -103,7 +112,7 @@
             // mLengthColumn
             // 
             this.mLengthColumn.Text = "Length";
-            this.mLengthColumn.Width = 75;
+            this.mLengthColumn.Width = 64;
             // 
             // mOpcodeColumn
             // 
@@ -112,7 +121,7 @@
             // mNameColumn
             // 
             this.mNameColumn.Text = "Name";
-            this.mNameColumn.Width = 205;
+            this.mNameColumn.Width = 147;
             // 
             // mPacketContextMenu
             // 
@@ -120,9 +129,10 @@
             this.mPacketContextNameLabel,
             this.mPacketContextNameBox,
             this.mPacketContextSeparator,
-            this.mPacketContextIgnoreMenu});
+            this.mPacketContextIgnoreMenu,
+            this.removePacketFromSessionToolStripMenuItem});
             this.mPacketContextMenu.Name = "mPacketContextMenu";
-            this.mPacketContextMenu.Size = new System.Drawing.Size(211, 79);
+            this.mPacketContextMenu.Size = new System.Drawing.Size(226, 123);
             this.mPacketContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.mPacketContextMenu_Opening);
             this.mPacketContextMenu.Opened += new System.EventHandler(this.mPacketContextMenu_Opened);
             // 
@@ -130,7 +140,7 @@
             // 
             this.mPacketContextNameLabel.Enabled = false;
             this.mPacketContextNameLabel.Name = "mPacketContextNameLabel";
-            this.mPacketContextNameLabel.Size = new System.Drawing.Size(210, 22);
+            this.mPacketContextNameLabel.Size = new System.Drawing.Size(225, 22);
             this.mPacketContextNameLabel.Text = "Name:";
             // 
             // mPacketContextNameBox
@@ -143,15 +153,26 @@
             // mPacketContextSeparator
             // 
             this.mPacketContextSeparator.Name = "mPacketContextSeparator";
-            this.mPacketContextSeparator.Size = new System.Drawing.Size(207, 6);
+            this.mPacketContextSeparator.Size = new System.Drawing.Size(222, 6);
             // 
             // mPacketContextIgnoreMenu
             // 
             this.mPacketContextIgnoreMenu.CheckOnClick = true;
             this.mPacketContextIgnoreMenu.Name = "mPacketContextIgnoreMenu";
-            this.mPacketContextIgnoreMenu.Size = new System.Drawing.Size(210, 22);
+            this.mPacketContextIgnoreMenu.Size = new System.Drawing.Size(225, 22);
             this.mPacketContextIgnoreMenu.Text = "Ignore";
             this.mPacketContextIgnoreMenu.CheckedChanged += new System.EventHandler(this.mPacketContextIgnoreMenu_CheckedChanged);
+            // 
+            // removePacketFromSessionToolStripMenuItem
+            // 
+            this.removePacketFromSessionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.thisPacketOnlyToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.allBeforeThisOneToolStripMenuItem,
+            this.allAfterThisOneToolStripMenuItem});
+            this.removePacketFromSessionToolStripMenuItem.Name = "removePacketFromSessionToolStripMenuItem";
+            this.removePacketFromSessionToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.removePacketFromSessionToolStripMenuItem.Text = "Remove packet from session";
             // 
             // mMenu
             // 
@@ -161,7 +182,7 @@
             this.dataToolStripMenuItem});
             this.mMenu.Location = new System.Drawing.Point(0, 0);
             this.mMenu.Name = "mMenu";
-            this.mMenu.Size = new System.Drawing.Size(611, 24);
+            this.mMenu.Size = new System.Drawing.Size(752, 24);
             this.mMenu.TabIndex = 6;
             this.mMenu.Visible = false;
             this.mMenu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.mMenu_ItemClicked);
@@ -182,7 +203,7 @@
             this.mFileSeparatorMenu.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mFileSeparatorMenu.MergeIndex = 2;
             this.mFileSeparatorMenu.Name = "mFileSeparatorMenu";
-            this.mFileSeparatorMenu.Size = new System.Drawing.Size(149, 6);
+            this.mFileSeparatorMenu.Size = new System.Drawing.Size(144, 6);
             this.mFileSeparatorMenu.Click += new System.EventHandler(this.mFileSeparatorMenu_Click);
             // 
             // mFileSaveMenu
@@ -359,11 +380,70 @@
             this.mExportDialog.RestoreDirectory = true;
             this.mExportDialog.Title = "Export";
             // 
+            // allBeforeThisOneToolStripMenuItem
+            // 
+            this.allBeforeThisOneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.onlyVisibleToolStripMenuItem,
+            this.allToolStripMenuItem});
+            this.allBeforeThisOneToolStripMenuItem.Name = "allBeforeThisOneToolStripMenuItem";
+            this.allBeforeThisOneToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.allBeforeThisOneToolStripMenuItem.Text = "Every packet before this one";
+            this.allBeforeThisOneToolStripMenuItem.Click += new System.EventHandler(this.allBeforeThisOneToolStripMenuItem_Click);
+            // 
+            // allAfterThisOneToolStripMenuItem
+            // 
+            this.allAfterThisOneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.onlyVisibleToolStripMenuItem1,
+            this.allToolStripMenuItem1});
+            this.allAfterThisOneToolStripMenuItem.Name = "allAfterThisOneToolStripMenuItem";
+            this.allAfterThisOneToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.allAfterThisOneToolStripMenuItem.Text = "Every packet after this one";
+            // 
+            // thisPacketOnlyToolStripMenuItem
+            // 
+            this.thisPacketOnlyToolStripMenuItem.Name = "thisPacketOnlyToolStripMenuItem";
+            this.thisPacketOnlyToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.thisPacketOnlyToolStripMenuItem.Text = "This packet only";
+            this.thisPacketOnlyToolStripMenuItem.Click += new System.EventHandler(this.thisPacketOnlyToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(219, 6);
+            // 
+            // onlyVisibleToolStripMenuItem
+            // 
+            this.onlyVisibleToolStripMenuItem.Name = "onlyVisibleToolStripMenuItem";
+            this.onlyVisibleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.onlyVisibleToolStripMenuItem.Text = "Only visible";
+            this.onlyVisibleToolStripMenuItem.Click += new System.EventHandler(this.onlyVisibleToolStripMenuItem_Click);
+            // 
+            // allToolStripMenuItem
+            // 
+            this.allToolStripMenuItem.Name = "allToolStripMenuItem";
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.allToolStripMenuItem.Text = "All";
+            this.allToolStripMenuItem.Click += new System.EventHandler(this.allToolStripMenuItem_Click);
+            // 
+            // onlyVisibleToolStripMenuItem1
+            // 
+            this.onlyVisibleToolStripMenuItem1.Name = "onlyVisibleToolStripMenuItem1";
+            this.onlyVisibleToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.onlyVisibleToolStripMenuItem1.Text = "Only visible";
+            this.onlyVisibleToolStripMenuItem1.Click += new System.EventHandler(this.onlyVisibleToolStripMenuItem1_Click);
+            // 
+            // allToolStripMenuItem1
+            // 
+            this.allToolStripMenuItem1.Name = "allToolStripMenuItem1";
+            this.allToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.allToolStripMenuItem1.Text = "All";
+            this.allToolStripMenuItem1.Click += new System.EventHandler(this.allToolStripMenuItem1_Click);
+            // 
             // SessionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(611, 451);
+            this.ClientSize = new System.Drawing.Size(752, 451);
             this.ControlBox = false;
             this.Controls.Add(this.mPacketList);
             this.Controls.Add(this.mMenu);
@@ -419,5 +499,14 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeLoggedPacketsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removePacketFromSessionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem thisPacketOnlyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem allBeforeThisOneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem allAfterThisOneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onlyVisibleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onlyVisibleToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem1;
     }
 }
