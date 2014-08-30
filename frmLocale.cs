@@ -39,6 +39,7 @@ namespace MapleShark
                 new Locale("Korea Test", 2),
                 new Locale("Japan", 3),
                 new Locale("China", 4),
+                new Locale("China Test", 5),
                 new Locale("Global Test", 5),
                 new Locale("Taiwan", 6),
                 new Locale("South-East Asia", 7),
