@@ -40,8 +40,8 @@ namespace MapleShark
             if ((short)pBuild < 0)
                 pBuild = (ushort)(0xFFFF - pBuild);
 
-            if (pLocale == 8 && pBuild >= 118) // GMS uses random keys since 118!
-                mAES.Key = GMSKeys.GetKeyForVersion(pBuild, pSubVersion);
+            if ((pLocale == 8 && pBuild >= 118) || (pLocale == 1 && pBuild >= 221))
+                mAES.Key = MapleKeys.GetKeyForVersion(pLocale, pBuild, pSubVersion);
             else
                 mAES.Key = sSecretKey;
 
@@ -147,6 +147,7 @@ namespace MapleShark
             byte[] newIV = new byte[] { 0xF2, 0x53, 0x50, 0xC6 };
             for (int i = 0; i < 4; ++i)
                 Morph(pOldIV[i], newIV);
+
             Buffer.BlockCopy(newIV, 0, mIV, 0, mIV.Length);
         }
 

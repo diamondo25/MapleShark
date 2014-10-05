@@ -6,12 +6,15 @@ using System.Text;
 namespace MapleShark
 {
     [Flags]
-    public enum TransformLocale : int
+    public enum TransformMethod : int
     {
         AES = 1 << 1,
         MAPLE_CRYPTO = 1 << 2,
-        OLD_KMS_CRYPTO = 1 << 7,
-        KMS_CRYPTO = 1 << 8,
+        OLD_KMS_CRYPTO = 1 << 3,
+        KMS_CRYPTO = 1 << 4,
+
+        SHIFT_IV = 1 << 5,
+        SHIFT_IV_OLD = 1 << 6,
         NONE = 0
     }
 
@@ -24,9 +27,41 @@ namespace MapleShark
         private byte[] mBuffer = new byte[DEFAULT_SIZE];
         private int mCursor = 0;
 
-        public MapleStream(bool pOutbound, ushort pBuild, byte pLocale, byte[] pIV, byte pSubVersion) { 
+        private TransformMethod _transformMethod;
+        private bool _usesByteHeader = false;
+
+        public MapleStream(bool pOutbound, ushort pBuild, byte pLocale, byte[] pIV, byte pSubVersion)
+        {
             mOutbound = pOutbound;
             mAES = new MapleAES(pBuild, pLocale, pIV, pSubVersion);
+
+            if ((pBuild == 40 && pLocale == 5) || (pBuild == 15 && pLocale == 7))
+            {
+                // WvsBeta
+                _transformMethod = TransformMethod.MAPLE_CRYPTO | TransformMethod.SHIFT_IV;
+                _usesByteHeader = true;
+            }
+            else if (pLocale == 1 && pBuild == 255)
+            {
+                // KMSB lol
+                _transformMethod = TransformMethod.OLD_KMS_CRYPTO | TransformMethod.SHIFT_IV_OLD;
+                _usesByteHeader = true;
+            }
+            else if (pLocale == 6 || pLocale == 4 || pLocale == 5 || pLocale == 3 || (pLocale == 8 && pBuild >= 149) || (pLocale == 1 && pBuild >= 221))
+            {
+                // TWMS / CMS / CMST / JMS / GMS (>= 149)
+                _transformMethod = TransformMethod.AES | TransformMethod.SHIFT_IV;
+            }
+            else if (pLocale == 1 || pLocale == 2)
+            {
+                // KMS / KMST
+                _transformMethod = TransformMethod.KMS_CRYPTO;
+            }
+            else
+            {
+                // All others lol
+                _transformMethod = TransformMethod.AES | TransformMethod.MAPLE_CRYPTO | TransformMethod.SHIFT_IV;
+            }
         }
 
         public void Append(byte[] pBuffer) { Append(pBuffer, 0, pBuffer.Length); }
@@ -56,44 +91,13 @@ namespace MapleShark
             byte[] packetBuffer = new byte[packetSize];
             Buffer.BlockCopy(mBuffer, 4, packetBuffer, 0, packetSize);
 
-            bool byteheader = false;
-            if ((pBuild == 40 && pLocale == 5) || (pBuild == 15 && pLocale == 7))
-            { 
-                // WvsBeta
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.MAPLE_CRYPTO);
-                byteheader = true;
-            }
-            else if (pLocale == 1 && pBuild == 255)
-            { 
-                // KMSB lol
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.OLD_KMS_CRYPTO);
-                byteheader = true;
-                // Still reset header.
-                mAES.ShiftIVOld();
-            }
-            else if (pLocale == 1 || pLocale == 2)
-            { 
-                // KMS / KMST
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.KMS_CRYPTO);
-            }
-            else if (pLocale == 6 || pLocale == 4 || pLocale == 5 || pLocale == 3 || (pLocale == 8 && pBuild >= 149))
-            {
-                // TWMS / CMS / CMST / JMS / GMS (>= 149)
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES);
-
-                mAES.ShiftIV();
-            }
-            else
-            { 
-                // All others lol
-                Decrypt(packetBuffer, pBuild, pLocale, TransformLocale.AES | TransformLocale.MAPLE_CRYPTO);
-            }
+            Decrypt(packetBuffer, pBuild, pLocale, _transformMethod);
 
             mCursor -= (packetSize + 4);
             if (mCursor > 0) Buffer.BlockCopy(mBuffer, packetSize + 4, mBuffer, 0, mCursor);
             ushort opcode;
 
-            if (byteheader)
+            if (_usesByteHeader)
             {
                 opcode = (ushort)(packetBuffer[0]);
                 Buffer.BlockCopy(packetBuffer, 1, packetBuffer, 0, packetSize - 1);
@@ -110,14 +114,11 @@ namespace MapleShark
             return new MaplePacket(pTransmitted, mOutbound, pBuild, pLocale, opcode, definition == null ? "" : definition.Name, packetBuffer);
         }
 
-        private void Decrypt(byte[] pBuffer, ushort pBuild, byte pLocale, TransformLocale pTransformLocale)
+        private void Decrypt(byte[] pBuffer, ushort pBuild, byte pLocale, TransformMethod pTransformLocale)
         {
-            if ((pTransformLocale & TransformLocale.AES) != 0)
-            {
-                mAES.TransformAES(pBuffer);
-            }
+            if ((pTransformLocale & TransformMethod.AES) != 0) mAES.TransformAES(pBuffer);
 
-            if ((pTransformLocale & TransformLocale.MAPLE_CRYPTO) != 0)
+            if ((pTransformLocale & TransformMethod.MAPLE_CRYPTO) != 0)
             {
                 for (int index1 = 1; index1 <= 6; ++index1)
                 {
@@ -158,18 +159,13 @@ namespace MapleShark
                         }
                     }
                 }
+            }
 
-                mAES.ShiftIV();
-            }
-            
-            if (pTransformLocale == TransformLocale.OLD_KMS_CRYPTO)
-            {
-                mAES.TransformOldKMS(pBuffer);
-            }
-            if (pTransformLocale == TransformLocale.KMS_CRYPTO)
-            {
-                mAES.TransformKMS(pBuffer);
-            }
+            if ((pTransformLocale & TransformMethod.KMS_CRYPTO) != 0) mAES.TransformKMS(pBuffer);
+            if ((pTransformLocale & TransformMethod.OLD_KMS_CRYPTO) != 0) mAES.TransformOldKMS(pBuffer);
+
+            if ((pTransformLocale & TransformMethod.SHIFT_IV) != 0) mAES.ShiftIV();
+            if ((pTransformLocale & TransformMethod.SHIFT_IV_OLD) != 0) mAES.ShiftIVOld();
         }
     }
 }

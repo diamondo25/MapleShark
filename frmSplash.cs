@@ -79,7 +79,7 @@ namespace MapleShark
             CraftNetTools.AppUpdates.Check();
 
             initialisator.ReportProgress(0, "Initializing GMS Keys");
-            GMSKeys.Initialize();
+            MapleKeys.Initialize();
 
             initialisator.ReportProgress(0, "Loading Script.NET context");
             RuntimeHost.Initialize();
