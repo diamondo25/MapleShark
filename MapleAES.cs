@@ -40,7 +40,9 @@ namespace MapleShark
             if ((short)pBuild < 0)
                 pBuild = (ushort)(0xFFFF - pBuild);
 
-            if ((pLocale == 8 && pBuild >= 118) || (pLocale == 1 && pBuild >= 221))
+            if ((pLocale == MapleLocale.GLOBAL && pBuild >= 118) ||
+                (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
+                (pLocale == MapleLocale.TAIWAN && pBuild >= 176))
                 mAES.Key = MapleKeys.GetKeyForVersion(pLocale, pBuild, pSubVersion);
             else
                 mAES.Key = sSecretKey;
@@ -78,18 +80,6 @@ namespace MapleShark
             return (ushort)length;
         }
 
-        public void GenerateHeader(byte[] pBuffer)
-        {
-            ushort build = (ushort)(((mBuild >> 8) & 0xFF) | ((mBuild << 8) & 0xFF00));
-            build = (ushort)(((mIV[3] & 0xFF) | ((mIV[2] << 8) & 0xFF00)) ^ build);
-            ushort length = (ushort)((((pBuffer.Length - 4) >> 8) & 0xFF) | (((pBuffer.Length - 4) << 8) & 0xFF00));
-            length ^= build;
-            pBuffer[0] = (byte)(build >> 8);
-            pBuffer[1] = (byte)build;
-            pBuffer[2] = (byte)(length >> 8);
-            pBuffer[3] = (byte)length;
-        }
-
         public void TransformKMS(byte[] pBuffer)
         {
             byte[] oudeIV = new byte[4];
@@ -114,32 +104,35 @@ namespace MapleShark
             ShiftIVOld();
         }
 
-        public void TransformAES(byte[] pBuffer)
+        public void TransformAES(byte[] pData)
         {
-            int remaining = pBuffer.Length;
-            int length = 0x5B0;
-            int start = 0;
-            byte[] realIV = new byte[mIV.Length * 4];
-            while (remaining > 0)
-            {
-                for (int index = 0; index < realIV.Length; ++index) realIV[index] = mIV[index % 4];
+            byte[] freshIVBlock = new byte[16] {
+                mIV[0], mIV[1], mIV[2], mIV[3],
+                mIV[0], mIV[1], mIV[2], mIV[3],
+                mIV[0], mIV[1], mIV[2], mIV[3],
+                mIV[0], mIV[1], mIV[2], mIV[3]
+            };
+            byte[] currentIVBlock = new byte[16];
+            int dataSize = pData.Length;
 
-                if (remaining < length) length = remaining;
-                for (int index = start; index < (start + length); ++index)
+            int blockSize = 0;
+            for (int start = 0; start < dataSize; start += blockSize)
+            {
+                blockSize = Math.Min(start == 0 ? 1456 : 1460, dataSize - start);
+                Buffer.BlockCopy(freshIVBlock, 0, currentIVBlock, 0, 16);
+
+                for (int i = 0; i < blockSize; i++)
                 {
-                    if (((index - start) % realIV.Length) == 0)
+                    // For every 16 bytes, update IV. 
+                    if ((i % 16) == 0)
                     {
-                        mTransformer.TransformBlock(realIV, 0, realIV.Length, realIV, 0);
+                        mTransformer.TransformBlock(currentIVBlock, 0, 16, currentIVBlock, 0);
                     }
 
-                    pBuffer[index] ^= realIV[(index - start) % realIV.Length];
+                    pData[start + i] ^= currentIVBlock[i % 16];
                 }
-                start += length;
-                remaining -= length;
-                length = 0x5B4;
             }
         }
-
         public void ShiftIV(byte[] pOldIV = null)
         {
             if (pOldIV == null) pOldIV = mIV;
@@ -160,14 +153,12 @@ namespace MapleShark
             pIV[2] ^= (byte)(sShiftKey[pIV[3]] + input);
             pIV[3] -= (byte)(pIV[0] - tableInput);
 
-            uint val = BitConverter.ToUInt32(pIV, 0);
-            uint val2 = val >> 0x1D;
-            val <<= 0x03;
-            val2 |= val;
-            pIV[0] = (byte)(val2 & 0xFF);
-            pIV[1] = (byte)((val2 >> 8) & 0xFF);
-            pIV[2] = (byte)((val2 >> 16) & 0xFF);
-            pIV[3] = (byte)((val2 >> 24) & 0xFF);
+            uint val = (uint)(pIV[0] | pIV[1] << 8 | pIV[2] << 16 | pIV[3] << 24);
+            val = (val >> 0x1D | val << 0x03);
+            pIV[0] = (byte)(val & 0xFF);
+            pIV[1] = (byte)((val >> 8) & 0xFF);
+            pIV[2] = (byte)((val >> 16) & 0xFF);
+            pIV[3] = (byte)((val >> 24) & 0xFF);
         }
     }
 }

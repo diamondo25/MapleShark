@@ -50,6 +50,7 @@
             this.mFileOpenMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileImportMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.importJavapropertiesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importMSnifferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.setupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mFileSeparatorMenu = new System.Windows.Forms.ToolStripSeparator();
@@ -70,7 +71,6 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.mDockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.importMSnifferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenu.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -122,6 +122,13 @@
             this.importJavapropertiesFileToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.importJavapropertiesFileToolStripMenuItem.Text = "Import Java *.properties file";
             this.importJavapropertiesFileToolStripMenuItem.Click += new System.EventHandler(this.importJavapropertiesFileToolStripMenuItem_Click);
+            // 
+            // importMSnifferToolStripMenuItem
+            // 
+            this.importMSnifferToolStripMenuItem.Name = "importMSnifferToolStripMenuItem";
+            this.importMSnifferToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.importMSnifferToolStripMenuItem.Text = "Import MSniffer logfile";
+            this.importMSnifferToolStripMenuItem.Click += new System.EventHandler(this.importMSnifferToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -346,13 +353,6 @@
             this.mDockPanel.Skin = dockPanelSkin1;
             this.mDockPanel.TabIndex = 4;
             this.mDockPanel.ActiveDocumentChanged += new System.EventHandler(this.mDockPanel_ActiveDocumentChanged);
-            // 
-            // importMSnifferToolStripMenuItem
-            // 
-            this.importMSnifferToolStripMenuItem.Name = "importMSnifferToolStripMenuItem";
-            this.importMSnifferToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.importMSnifferToolStripMenuItem.Text = "Import MSniffer";
-            this.importMSnifferToolStripMenuItem.Click += new System.EventHandler(this.importMSnifferToolStripMenuItem_Click);
             // 
             // MainForm
             // 

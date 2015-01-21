@@ -536,7 +536,12 @@ namespace MapleShark
 
                 Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, packet.Outbound, packet.Opcode);
 
-                tmp += string.Format("[{0}][{2}] [{3:X4}{5}] {4}\r\n", packet.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff"), (packet.Outbound ? outboundCount : inboundCount), (packet.Outbound ? "Outbound" : "Inbound "), packet.Opcode, BitConverter.ToString(packet.InnerBuffer).Replace('-', ' '),
+                tmp += string.Format("[{0}][{2}] [{3:X4}{5}] {4}\r\n",
+                    packet.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                    (packet.Outbound ? outboundCount : inboundCount),
+                    (packet.Outbound ? "Outbound" : "Inbound "),
+                    packet.Opcode,
+                    BitConverter.ToString(packet.InnerBuffer).Replace('-', ' '),
                     includeNames ? " | " + (definition == null ? "N/A" : definition.Name) : "");
                 i++;
                 if (i % 1000 == 0)

@@ -101,7 +101,6 @@
             this.Name = "frmLocale";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MapleShark";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmLocale_FormClosing);
             this.Load += new System.EventHandler(this.frmLocale_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudLocale)).EndInit();
             this.ResumeLayout(false);

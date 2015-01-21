@@ -35,24 +35,32 @@ namespace MapleShark
             mOutbound = pOutbound;
             mAES = new MapleAES(pBuild, pLocale, pIV, pSubVersion);
 
-            if ((pBuild == 40 && pLocale == 5) || (pBuild == 15 && pLocale == 7))
+            if ((pLocale == MapleLocale.GLOBAL_TEST && pBuild == 40) || 
+                (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild == 15))
             {
                 // WvsBeta
                 _transformMethod = TransformMethod.MAPLE_CRYPTO | TransformMethod.SHIFT_IV;
                 _usesByteHeader = true;
             }
-            else if (pLocale == 1 && pBuild == 255)
+            else if (pLocale == MapleLocale.KOREA_TEST && pBuild == 255)
             {
-                // KMSB lol
+                // KMSB (Modified client)
                 _transformMethod = TransformMethod.OLD_KMS_CRYPTO | TransformMethod.SHIFT_IV_OLD;
                 _usesByteHeader = true;
             }
-            else if (pLocale == 6 || pLocale == 4 || pLocale == 5 || pLocale == 3 || (pLocale == 8 && pBuild >= 149) || (pLocale == 1 && pBuild >= 221))
+            else if (
+                pLocale == MapleLocale.TAIWAN || 
+                pLocale == MapleLocale.CHINA || 
+                pLocale == MapleLocale.CHINA_TEST ||
+                pLocale == MapleLocale.JAPAN || 
+                (pLocale == MapleLocale.GLOBAL && pBuild >= 149) || 
+                (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
+                (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild >= 144))
             {
                 // TWMS / CMS / CMST / JMS / GMS (>= 149)
                 _transformMethod = TransformMethod.AES | TransformMethod.SHIFT_IV;
             }
-            else if (pLocale == 1 || pLocale == 2)
+            else if (pLocale == MapleLocale.KOREA || pLocale == MapleLocale.KOREA_TEST)
             {
                 // KMS / KMST
                 _transformMethod = TransformMethod.KMS_CRYPTO;

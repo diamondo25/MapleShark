@@ -235,6 +235,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MapleAES.cs" />
+    <Compile Include="MapleLocales.cs" />
     <Compile Include="MaplePacket.cs" />
     <Compile Include="MapleStream.cs" />
     <Compile Include="OutputForm.cs">

@@ -28,24 +28,20 @@ namespace MapleShark
             Close();
         }
 
-        private void frmLocale_FormClosing(object sender, FormClosingEventArgs e)
-        {
-        }
-
         private void frmLocale_Load(object sender, EventArgs e)
         {
             cbLocale.Items.AddRange(new object[] {
-                new Locale("Korea", 1),
-                new Locale("Korea Test", 2),
-                new Locale("Japan", 3),
-                new Locale("China", 4),
-                new Locale("China Test", 5),
-                new Locale("Global Test", 5),
-                new Locale("Taiwan", 6),
-                new Locale("South-East Asia", 7),
-                new Locale("Global", 8),
-                new Locale("Europe", 9),
-                new Locale("Brazil", 9),
+                new Locale("Korea", MapleLocale.KOREA),
+                new Locale("Korea Test", MapleLocale.KOREA_TEST),
+                new Locale("Japan", MapleLocale.JAPAN),
+                new Locale("China", MapleLocale.CHINA),
+                new Locale("China Test", MapleLocale.CHINA_TEST),
+                new Locale("Global Test", MapleLocale.GLOBAL_TEST),
+                new Locale("Taiwan", MapleLocale.TAIWAN),
+                new Locale("South-East Asia", MapleLocale.SOUTH_EAST_ASIA),
+                new Locale("Global", MapleLocale.GLOBAL),
+                new Locale("Europe", MapleLocale.EUROPE),
+                new Locale("Brazil", MapleLocale.BRAZIL),
             });
             cbLocale.SelectedIndex = 0;
         }
