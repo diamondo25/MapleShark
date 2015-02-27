@@ -672,7 +672,7 @@ namespace MapleShark
             definition.Ignore = mPacketContextIgnoreMenu.Checked;
             DefinitionsContainer.Instance.SaveDefinition(definition);
 
-            int newIndex = packet.Index;
+            int newIndex = packet.Index - 1;
             for (var i = packet.Index - 1; i > 0; i--)
             {
                 var pack = mPacketList.Items[i] as MaplePacket;
