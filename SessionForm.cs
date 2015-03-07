@@ -765,14 +765,15 @@ namespace MapleShark
         {
             if (mPacketList.SelectedItems.Count == 0) return;
             var packet = mPacketList.SelectedItems[0] as MaplePacket;
+            var index = packet.Index;
             mPackets.Remove(packet);
 
             packet.Selected = false;
-
-            var nextElement = packet.FindNearestItem(SearchDirectionHint.Down);
-            if (nextElement == null) nextElement = packet.FindNearestItem(SearchDirectionHint.Up);
-            if (nextElement != null)
-                nextElement.Selected = true;
+            if (index > 0)
+            {
+                index--;
+                mPackets[index].Selected = true;
+            }
             RefreshPackets();
         }
 
