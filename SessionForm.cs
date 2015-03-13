@@ -208,6 +208,7 @@ namespace MapleShark
                         contents += "\tAddField(\"Local Initializing Vector (IV)\", 4);\r\n";
                         contents += "\tAddField(\"Remote Initializing Vector (IV)\", 4);\r\n";
                         contents += "\tAddByte(\"MapleStory Locale\");\r\n";
+                        contents += "\tAddByte(\"Unknown\");\r\n";
                         contents += "}";
                         File.WriteAllText(filename, contents);
                     }
