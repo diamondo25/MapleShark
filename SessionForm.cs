@@ -208,7 +208,9 @@ namespace MapleShark
                         contents += "\tAddField(\"Local Initializing Vector (IV)\", 4);\r\n";
                         contents += "\tAddField(\"Remote Initializing Vector (IV)\", 4);\r\n";
                         contents += "\tAddByte(\"MapleStory Locale\");\r\n";
-                        if (mRemotePort == 8484 && mLocale == 8 && version >= 160)
+                        if (mRemotePort == 8484 && ((mLocale == MapleLocale.GLOBAL && version >= 160) ||
+                                                    (mLocale == MapleLocale.TAIWAN && version >= 176) ||
+                                                    (mLocale == MapleLocale.CHINA && version >= 122)))
                             contents += "\tAddByte(\"Unknown\");\r\n";
                         contents += "}";
                         File.WriteAllText(filename, contents);
