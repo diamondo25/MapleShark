@@ -33,6 +33,7 @@ namespace MapleShark
         //private bool mSavedAfterTermination = false;
         private ushort mLocalPort = 0;
         private ushort mRemotePort = 0;
+        private ushort mProxyPort = 0;
         private uint mOutboundSequence = 0;
         private uint mInboundSequence = 0;
         private ushort mBuild = 0;
@@ -44,9 +45,11 @@ namespace MapleShark
         private MapleStream mInboundStream = null;
         private List<MaplePacket> mPackets = new List<MaplePacket>();
         private List<Pair<bool, ushort>> mOpcodes = new List<Pair<bool, ushort>>();
+        private int socks5 = 0;
 
         private string mRemoteEndpoint = "???";
         private string mLocalEndpoint = "???";
+        private string mProxyEndpoint = "???";
 
         // Used for determining if the session did receive a packet at all, or if it just emptied its buffers
         public bool ClearedPackets { get; private set; }
@@ -77,8 +80,8 @@ namespace MapleShark
         internal bool MatchTCPPacket(TcpPacket pTCPPacket)
         {
             if (mTerminated) return false;
-            if (pTCPPacket.SourcePort == mLocalPort && pTCPPacket.DestinationPort == mRemotePort) return true;
-            if (pTCPPacket.SourcePort == mRemotePort && pTCPPacket.DestinationPort == mLocalPort) return true;
+            if (pTCPPacket.SourcePort == mLocalPort && pTCPPacket.DestinationPort == (mProxyPort > 0 ? mProxyPort : mRemotePort)) return true;
+            if (pTCPPacket.SourcePort == (mProxyPort > 0 ? mProxyPort : mRemotePort) && pTCPPacket.DestinationPort == mLocalPort) return true;
             return false;
         }
 
@@ -122,26 +125,92 @@ namespace MapleShark
                 Text = "Port " + mLocalPort + " - " + mRemotePort;
                 startTime = DateTime.Now;
 
-                mRemoteEndpoint = ((PacketDotNet.IPv4Packet)pTCPPacket.ParentPacket).SourceAddress.ToString() + ":" + pTCPPacket.SourcePort.ToString();
-                mLocalEndpoint = ((PacketDotNet.IPv4Packet)pTCPPacket.ParentPacket).DestinationAddress.ToString() + ":" + pTCPPacket.DestinationPort.ToString();
-                Console.WriteLine("[CONNECTION] From {0} to {1}", mRemoteEndpoint, mLocalEndpoint);
+                try
+                {
+                    mRemoteEndpoint = ((PacketDotNet.IPv4Packet)pTCPPacket.ParentPacket).SourceAddress.ToString() + ":" + pTCPPacket.SourcePort.ToString();
+                    mLocalEndpoint = ((PacketDotNet.IPv4Packet)pTCPPacket.ParentPacket).DestinationAddress.ToString() + ":" + pTCPPacket.DestinationPort.ToString();
+                    Console.WriteLine("[CONNECTION] From {0} to {1}", mRemoteEndpoint, mLocalEndpoint);
 
-                return Results.Continue;
+                    return Results.Continue;
+                }
+                catch
+                {
+                    return Results.CloseMe;
+                }
             }
             if (pTCPPacket.Syn && pTCPPacket.Ack) { mInboundSequence = (uint)(pTCPPacket.SequenceNumber + 1); return Results.Continue; }
             if (pTCPPacket.PayloadData.Length == 0) return Results.Continue;
             if (mBuild == 0)
             {
-                if (pTCPPacket.PayloadData.Length < 13) return Results.CloseMe;
                 byte[] tcpData = pTCPPacket.PayloadData;
 
+                if (pTCPPacket.SourcePort == mLocalPort) mOutboundSequence += (uint)tcpData.Length;
+                else mInboundSequence += (uint)tcpData.Length;
+
                 ushort length = (ushort)(BitConverter.ToUInt16(tcpData, 0) + 2);
-                byte[] headerData = new byte[length];
-                Buffer.BlockCopy(tcpData, 0, headerData, 0, length);
+                byte[] headerData = new byte[tcpData.Length];
+                Buffer.BlockCopy(tcpData, 0, headerData, 0, tcpData.Length);
 
                 bool mIsKMS = false;
 
                 PacketReader pr = new PacketReader(headerData);
+
+                if (length != tcpData.Length || tcpData.Length < 13)
+                {
+                    if (socks5 > 0 && socks5 < 7)
+                    {
+                        if (pr.ReadByte() == 5 && pr.ReadByte() == 1)
+                        {
+                            pr.ReadByte();
+                            mProxyEndpoint = mLocalEndpoint;
+                            mLocalEndpoint = "";
+                            switch (pr.ReadByte())
+                            {
+                                case 1://IPv4
+                                    for (int i = 0; i < 4; i++)
+                                    {
+                                        mLocalEndpoint += pr.ReadByte();
+                                        if (i < 3)
+                                        {
+                                            mLocalEndpoint += ".";
+                                        }
+                                    }
+                                    break;
+                                case 3://Domain
+                                    //readInt - String Length
+                                    //readAsciiString - Address
+                                    break;
+                                case 4://IPv6
+                                    for (int i = 0; i < 16; i++)
+                                    {
+                                        pr.ReadByte();
+                                    }
+                                    break;
+                            }
+                            byte[] ports = new byte[2];
+                            for (int i = 1; i >= 0; i--)
+                            {
+                                ports[i] = pr.ReadByte();
+                            }
+                            PacketReader portr = new PacketReader(ports);
+                            mProxyPort = mRemotePort;
+                            mRemotePort = portr.ReadUShort();
+                            mLocalEndpoint += ":" + mRemotePort;
+                            Text = "Port " + mLocalPort + " - " + mRemotePort + "(Proxy" + mProxyPort + ")";
+                            Console.WriteLine("[socks5] From {0} to {1} (Proxy {2})", mRemoteEndpoint, mLocalEndpoint, mProxyEndpoint);
+                        }
+                        socks5++;
+                        return Results.Continue;
+                    }
+                    else if (tcpData.Length == 3 && pr.ReadByte() == 5)
+                    {
+                        socks5 = 1;
+                        return Results.Continue;
+                    }
+                    Console.WriteLine(mLocalEndpoint + "Not a MapleStory HankShake");
+                    return Results.CloseMe;
+                }
+
                 pr.ReadUShort();
                 ushort version = pr.ReadUShort();
                 byte subVersion = 1;
@@ -176,7 +245,6 @@ namespace MapleShark
 
                 mOutboundStream = new MapleStream(true, mBuild, mLocale, localIV, subVersion);
                 mInboundStream = new MapleStream(false, (ushort)(0xFFFF - mBuild), mLocale, remoteIV, subVersion);
-                mInboundSequence += (uint)length;
 
                 // Generate HandShake packet
                 Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, false, 0xFFFF);
@@ -714,7 +782,7 @@ namespace MapleShark
             si.txtVersion.Text = mBuild.ToString();
             si.txtPatchLocation.Text = mPatchLocation;
             si.txtLocale.Text = mLocale.ToString();
-            si.txtAdditionalInfo.Text = "Connection info:\r\n" + mLocalEndpoint + " <-> " + mRemoteEndpoint;
+            si.txtAdditionalInfo.Text = "Connection info:\r\n" + mLocalEndpoint + " <-> " + mRemoteEndpoint + (mProxyEndpoint != "???" ? "\r\nProxy:" + mProxyEndpoint : "");
 
             if (mLocale == 1 || mLocale == 2)
             {
