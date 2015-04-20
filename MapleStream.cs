@@ -35,7 +35,7 @@ namespace MapleShark
             mOutbound = pOutbound;
             mAES = new MapleAES(pBuild, pLocale, pIV, pSubVersion);
 
-            if ((pLocale == MapleLocale.GLOBAL_TEST && pBuild == 40) || 
+            if ((pLocale == MapleLocale.TESPIA && pBuild == 40) || 
                 (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild == 15))
             {
                 // WvsBeta
@@ -51,7 +51,7 @@ namespace MapleShark
             else if (
                 pLocale == MapleLocale.TAIWAN || 
                 pLocale == MapleLocale.CHINA || 
-                pLocale == MapleLocale.CHINA_TEST ||
+                pLocale == MapleLocale.TESPIA ||
                 pLocale == MapleLocale.JAPAN || 
                 (pLocale == MapleLocale.GLOBAL && pBuild >= 149) || 
                 (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
