@@ -207,7 +207,7 @@ namespace MapleShark
                         socks5 = 1;
                         return Results.Continue;
                     }
-                    Console.WriteLine(mLocalEndpoint + "Not a MapleStory HankShake");
+                    Console.WriteLine("Connection on port {0} did not have a MapleStory Handshake", mLocalEndpoint);
                     return Results.CloseMe;
                 }
 

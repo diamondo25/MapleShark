@@ -493,7 +493,7 @@ namespace MapleShark
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select MSniffer logfile";
-            ofd.Filter = "AllFile|*.*";
+            ofd.Filter = "All files|*.*";
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 ReadMSnifferFile(ofd.FileName);
         }
