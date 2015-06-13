@@ -53,7 +53,7 @@ namespace MapleShark
                 pLocale == MapleLocale.CHINA || 
                 pLocale == MapleLocale.CHINA_TEST ||
                 pLocale == MapleLocale.JAPAN || 
-                (pLocale == MapleLocale.GLOBAL && pBuild >= 149) || 
+                (pLocale == MapleLocale.GLOBAL && (short)pBuild >= 149) || 
                 (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
                 (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild >= 144))
             {

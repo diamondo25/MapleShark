@@ -166,7 +166,8 @@ namespace MapleShark
                 }
                 else if (patchLocation.All(character => { return character >= '0' && character <= '9'; }))
                 {
-                    subVersion = byte.Parse(patchLocation);
+		    if (!byte.TryParse(patchLocation, out subVersion))
+		        Console.WriteLine("Failed to parse subVersion");
                 }
 
                 mBuild = version;
