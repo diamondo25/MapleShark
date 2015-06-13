@@ -190,7 +190,7 @@ namespace MapleShark
             if (node == null) { MainForm.DataForm.HexBox.SelectionLength = 0; MainForm.PropertyForm.Properties.SelectedObject = null; return; }
             MainForm.DataForm.HexBox.SelectionStart = node.Cursor;
             MainForm.DataForm.HexBox.SelectionLength = node.Length;
-            MainForm.PropertyForm.Properties.SelectedObject = new StructureSegment(node.Buffer, node.Cursor, node.Length);
+            MainForm.PropertyForm.Properties.SelectedObject = new StructureSegment(node.Buffer, node.Cursor, node.Length, MainForm.Locale);
         }
 
         private void mTree_KeyDown(object pSender, KeyEventArgs pArgs)

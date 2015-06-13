@@ -7,10 +7,33 @@ namespace MapleShark
     public sealed class StructureSegment
     {
         private byte[] mBuffer;
+        private Encoding ascii = Encoding.UTF8;
 
-        public StructureSegment(byte[] pBuffer, int pStart, int pLength)
+        public StructureSegment(byte[] pBuffer, int pStart, int pLength, byte locale)
         {
             mBuffer = new byte[pLength];
+            switch (locale)
+            {
+                case MapleLocale.KOREA:
+                case MapleLocale.KOREA_TEST:
+                    ascii = Encoding.GetEncoding("EUC_KR");
+                    break;
+                case MapleLocale.JAPAN:
+                    ascii = Encoding.GetEncoding("Shift_JIS");
+                    break;
+                case MapleLocale.CHINA:
+                    ascii = Encoding.GetEncoding("GB18030");
+                    break;
+                case MapleLocale.TESPIA:
+                    ascii = Encoding.Default;
+                    break;
+                case MapleLocale.TAIWAN:
+                    ascii = Encoding.GetEncoding("BIG5-HKSCS");
+                    break;
+                default:
+                    ascii = Encoding.UTF8;
+                    break;
+            }
             Buffer.BlockCopy(pBuffer, pStart, mBuffer, 0, pLength);
         }
 
@@ -93,10 +116,23 @@ namespace MapleShark
             {
                 if (mBuffer.Length == 0) return null;
                 if (mBuffer[0] == 0x00) return "";
-                for (int index = 0; index < mBuffer.Length; ++index) if (mBuffer[index] == 0x00) return Encoding.ASCII.GetString(mBuffer, 0, index);
-                return Encoding.ASCII.GetString(mBuffer, 0, mBuffer.Length);
+                for (int index = 0; index < mBuffer.Length; ++index) if (mBuffer[index] == 0x00) return ascii.GetString(mBuffer, 0, index);
+                return ascii.GetString(mBuffer, 0, mBuffer.Length);
             }
         }
+
+        public string StringIgnore
+        {
+            get
+            {
+                byte[] sBuffer = new byte[mBuffer.Length];
+                Buffer.BlockCopy(mBuffer, 0, sBuffer, 0, mBuffer.Length);
+                if (sBuffer.Length == 0) return null;
+                for (int index = 0; index < sBuffer.Length; ++index) if (sBuffer[index] >= 0x00 && sBuffer[index] < 0x20) sBuffer[index] = 0x2E;
+                return ascii.GetString(sBuffer, 0, sBuffer.Length);
+            }
+        }
+
         public string Length
         {
             get
