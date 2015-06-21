@@ -99,7 +99,11 @@ namespace MapleShark
             byte[] packetBuffer = new byte[packetSize];
             Buffer.BlockCopy(mBuffer, 4, packetBuffer, 0, packetSize);
 
+            var preDecodeIV = BitConverter.ToUInt32(mAES.mIV, 0);
+
             Decrypt(packetBuffer, pBuild, pLocale, _transformMethod);
+
+            var postDecodeIV = BitConverter.ToUInt32(mAES.mIV, 0);
 
             mCursor -= (packetSize + 4);
             if (mCursor > 0) Buffer.BlockCopy(mBuffer, packetSize + 4, mBuffer, 0, mCursor);
@@ -119,7 +123,7 @@ namespace MapleShark
             }
 
             Definition definition = Config.Instance.GetDefinition(pBuild, pLocale, mOutbound, opcode);
-            return new MaplePacket(pTransmitted, mOutbound, pBuild, pLocale, opcode, definition == null ? "" : definition.Name, packetBuffer);
+            return new MaplePacket(pTransmitted, mOutbound, pBuild, pLocale, opcode, definition == null ? "" : definition.Name, packetBuffer, preDecodeIV, postDecodeIV);
         }
 
         private void Decrypt(byte[] pBuffer, ushort pBuild, byte pLocale, TransformMethod pTransformLocale)

@@ -98,10 +98,10 @@ namespace MapleShark
                 MaplePacket packet = session.ListView.Items[index] as MaplePacket;
                 long searchIndex = startIndex + 1;
                 bool found = false;
-                while (searchIndex <= packet.InnerBuffer.Length - pattern.Length)
+                while (searchIndex <= packet.Buffer.Length - pattern.Length)
                 {
                     found = true;
-                    for (int patternIndex = 0; found && patternIndex < pattern.Length; ++patternIndex) found = packet.InnerBuffer[searchIndex + patternIndex] == pattern[patternIndex];
+                    for (int patternIndex = 0; found && patternIndex < pattern.Length; ++patternIndex) found = packet.Buffer[searchIndex + patternIndex] == pattern[patternIndex];
                     if (found) break;
                     ++searchIndex;
                 }

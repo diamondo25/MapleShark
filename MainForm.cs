@@ -457,7 +457,14 @@ namespace MapleShark
                 if (form is SessionForm)
                     sessionForms.Add(form as SessionForm);
 
-            while (sessionForms.Count > 0)
+            int sessions = sessionForms.Count;
+            bool doSaveQuestioning = true;
+            if (sessions > 5)
+            {
+                doSaveQuestioning = MessageBox.Show("You've got " + sessions + " sessions open. Say 'Yes' if you want to get a question for each session, 'No' if you want to quit MapleShark.", "MapleShark", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes;
+            }
+
+            while (doSaveQuestioning && sessionForms.Count > 0)
             {
                 SessionForm ses = sessionForms[0];
                 if (!ses.Saved)
