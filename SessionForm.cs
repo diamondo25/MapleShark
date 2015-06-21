@@ -215,7 +215,7 @@ namespace MapleShark
                     }
                 }
 
-                MaplePacket packet = new MaplePacket(pArrivalTime, false, mBuild, mLocale, 0xFFFF, definition == null ? "" : definition.Name, tcpData);
+                MaplePacket packet = new MaplePacket(pArrivalTime, false, mBuild, mLocale, 0xFFFF, definition == null ? "" : definition.Name, tcpData, (uint)0, BitConverter.ToUInt32(remoteIV, 0));
                 if (!mOpcodes.Exists(kv => kv.First == packet.Outbound && kv.Second == packet.Opcode)) // Should be false, but w/e
                 {
                     mOpcodes.Add(new Pair<bool, ushort>(packet.Outbound, packet.Opcode));
@@ -288,7 +288,7 @@ namespace MapleShark
                 Console.WriteLine(ex.ToString());
                 mTerminated = true;
                 Text += " (Terminated)";
-                MainForm.CloseSession(this);
+                //MainForm.CloseSession(this);
                 return;
             }
 
@@ -383,8 +383,16 @@ namespace MapleShark
                     }
 
                     byte[] buffer = reader.ReadBytes(size);
+
+                    uint preDecodeIV = 0, postDecodeIV = 0;
+                    if (MapleSharkVersion >= 0x2025)
+                    {
+                        preDecodeIV = reader.ReadUInt32();
+                        postDecodeIV = reader.ReadUInt32();
+                    }
+
                     Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, outbound, opcode);
-                    MaplePacket packet = new MaplePacket(new DateTime(timestamp), outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer);
+                    MaplePacket packet = new MaplePacket(new DateTime(timestamp), outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer, preDecodeIV, postDecodeIV);
                     mPackets.Add(packet);
                     if (!mOpcodes.Exists(kv => kv.First == packet.Outbound && kv.Second == packet.Opcode)) mOpcodes.Add(new Pair<bool, ushort>(packet.Outbound, packet.Opcode));
                     if (definition != null && definition.Ignore) continue;
@@ -459,7 +467,7 @@ namespace MapleShark
             
 
             Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, outbound, opcode);
-            MaplePacket packet = new MaplePacket(date, outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer);
+            MaplePacket packet = new MaplePacket(date, outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer, 0, 0);
             mPackets.Add(packet);
             if (!mOpcodes.Exists(kv => kv.First == packet.Outbound && kv.Second == packet.Opcode)) mOpcodes.Add(new Pair<bool, ushort>(packet.Outbound, packet.Opcode));
             if (definition != null && definition.Ignore) return;
@@ -481,8 +489,10 @@ namespace MapleShark
             }
             using (FileStream stream = new FileStream(mFilename, FileMode.Create, FileAccess.Write))
             {
+                var version = (ushort)0x2025;
+
                 BinaryWriter writer = new BinaryWriter(stream);
-                writer.Write((ushort)0x2021);
+                writer.Write(version);
                 writer.Write(mLocalEndpoint);
                 writer.Write(mLocalPort);
                 writer.Write(mRemoteEndpoint);
@@ -491,7 +501,18 @@ namespace MapleShark
                 writer.Write(mBuild);
                 writer.Write(mPatchLocation);
 
-                mPackets.ForEach(p => writer.Write(p.Dump()));
+                mPackets.ForEach(p => {
+                    writer.Write((ulong)p.Timestamp.Ticks);
+                    writer.Write((ushort)p.Length);
+                    writer.Write((ushort)p.Opcode);
+                    writer.Write((byte)(p.Outbound ? 1 : 0));
+                    writer.Write(p.Buffer);
+                    if (version == 0x2025)
+                    {
+                        writer.Write(p.PreDecodeIV);
+                        writer.Write(p.PostDecodeIV);
+                    }
+                });
 
                 stream.Flush();
             }
@@ -520,7 +541,7 @@ namespace MapleShark
 
             long dataSize = 0;
             foreach (var packet in mPackets)
-                dataSize += 2 + packet.InnerBuffer.Length;
+                dataSize += 2 + packet.Buffer.Length;
 
             tmp += string.Format("- Data: {0:N0} bytes\r\n", dataSize);
             tmp += string.Format("================================================\r\n");
@@ -543,7 +564,7 @@ namespace MapleShark
                     (packet.Outbound ? outboundCount : inboundCount),
                     (packet.Outbound ? "Outbound" : "Inbound "),
                     packet.Opcode,
-                    BitConverter.ToString(packet.InnerBuffer).Replace('-', ' '),
+                    BitConverter.ToString(packet.Buffer).Replace('-', ' '),
                     includeNames ? " | " + (definition == null ? "N/A" : definition.Name) : "");
                 i++;
                 if (i % 1000 == 0)
@@ -580,7 +601,7 @@ namespace MapleShark
         private void mPacketList_SelectedIndexChanged(object pSender, EventArgs pArgs)
         {
             if (mPacketList.SelectedItems.Count == 0) { MainForm.DataForm.HexBox.ByteProvider = null; MainForm.StructureForm.Tree.Nodes.Clear(); MainForm.PropertyForm.Properties.SelectedObject = null; return; }
-            MainForm.DataForm.HexBox.ByteProvider = new DynamicByteProvider((mPacketList.SelectedItems[0] as MaplePacket).InnerBuffer);
+            MainForm.DataForm.HexBox.ByteProvider = new DynamicByteProvider((mPacketList.SelectedItems[0] as MaplePacket).Buffer);
             MainForm.StructureForm.ParseMaplePacket(mPacketList.SelectedItems[0] as MaplePacket);
         }
 

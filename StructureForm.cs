@@ -54,7 +54,7 @@ namespace MapleShark
 
                 mParsing = null;
             }
-            if (pPacket.Remaining > 0) mTree.Nodes.Add(new StructureNode("Undefined", pPacket.InnerBuffer, pPacket.Cursor, pPacket.Remaining));
+            if (pPacket.Remaining > 0) mTree.Nodes.Add(new StructureNode("Undefined", pPacket.Buffer, pPacket.Cursor, pPacket.Remaining));
         }
 
         private TreeNodeCollection CurrentNodes { get { return mSubNodes.Count > 0 ? mSubNodes.Peek().Nodes : mTree.Nodes; } }
@@ -67,77 +67,77 @@ namespace MapleShark
         {
             byte value;
             if (!mParsing.ReadByte(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 1, 1));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 1, 1));
             return value;
         }
         internal sbyte APIAddSByte(string pName)
         {
             sbyte value;
             if (!mParsing.ReadSByte(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 1, 1));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 1, 1));
             return value;
         }
         internal ushort APIAddUShort(string pName)
         {
             ushort value;
             if (!mParsing.ReadUShort(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 2, 2));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 2, 2));
             return value;
         }
         internal short APIAddShort(string pName)
         {
             short value;
             if (!mParsing.ReadShort(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 2, 2));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 2, 2));
             return value;
         }
         internal uint APIAddUInt(string pName)
         {
             uint value;
             if (!mParsing.ReadUInt(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 4, 4));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 4, 4));
             return value;
         }
         internal int APIAddInt(string pName)
         {
             int value;
             if (!mParsing.ReadInt(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 4, 4));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 4, 4));
             return value;
         }
         internal float APIAddFloat(string pName)
         {
             float value;
             if (!mParsing.ReadFloat(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 4, 4));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 4, 4));
             return value;
         }
         internal bool APIAddBool(string pName)
         {
             byte value;
             if (!mParsing.ReadByte(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 1, 1));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 1, 1));
             return Convert.ToBoolean(value);
         }
         internal long APIAddLong(string pName)
         {
             long value;
             if (!mParsing.ReadLong(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 8, 8));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 8, 8));
             return value;
         }
         internal long APIAddFlippedLong(string pName)
         {
             long value;
             if (!mParsing.ReadFlippedLong(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 8, 8));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 8, 8));
             return value;
         }
         internal double APIAddDouble(string pName)
         {
             double value;
             if (!mParsing.ReadDouble(out value)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - 8, 8));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - 8, 8));
             return value;
         }
         internal string APIAddString(string pName)
@@ -152,22 +152,22 @@ namespace MapleShark
         {
             string value;
             if (!mParsing.ReadPaddedString(out value, pLength)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - pLength, pLength));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - pLength, pLength));
             return value;
         }
         internal void APIAddField(string pName, int pLength)
         {
             byte[] buffer = new byte[pLength];
             if (!mParsing.ReadBytes(buffer)) throw new Exception("Insufficient packet data");
-            CurrentNodes.Add(new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor - pLength, pLength));
+            CurrentNodes.Add(new StructureNode(pName, mParsing.Buffer, mParsing.Cursor - pLength, pLength));
         }
         internal void APIAddComment(string pComment)
         {
-            CurrentNodes.Add(new StructureNode(pComment, mParsing.InnerBuffer, mParsing.Cursor, 0));
+            CurrentNodes.Add(new StructureNode(pComment, mParsing.Buffer, mParsing.Cursor, 0));
         }
         internal void APIStartNode(string pName)
         {
-            StructureNode node = new StructureNode(pName, mParsing.InnerBuffer, mParsing.Cursor, 0);
+            StructureNode node = new StructureNode(pName, mParsing.Buffer, mParsing.Cursor, 0);
             if (mSubNodes.Count > 0) mSubNodes.Peek().Nodes.Add(node);
             else mTree.Nodes.Add(node);
             mSubNodes.Push(node);
