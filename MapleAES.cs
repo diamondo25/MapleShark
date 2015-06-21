@@ -42,7 +42,8 @@ namespace MapleShark
 
             if ((pLocale == MapleLocale.GLOBAL && pBuild >= 118) ||
                 (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
-                (pLocale == MapleLocale.TAIWAN && pBuild >= 176))
+                (pLocale == MapleLocale.TAIWAN && pBuild >= 176) ||
+                (pLocale == MapleLocale.CHINA && pBuild >= 124))
                 mAES.Key = MapleKeys.GetKeyForVersion(pLocale, pBuild, pSubVersion);
             else
                 mAES.Key = sSecretKey;

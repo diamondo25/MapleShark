@@ -39,6 +39,7 @@ namespace MapleShark
         public DataForm DataForm { get { return mDataForm; } }
         public StructureForm StructureForm { get { return mStructureForm; } }
         public PropertyForm PropertyForm { get { return mPropertyForm; } }
+        public byte Locale { get { return (mDockPanel.ActiveDocument as SessionForm).Locale; } }
 
         PcapDevice device;
 
@@ -499,7 +500,7 @@ namespace MapleShark
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select MSniffer logfile";
-            ofd.Filter = "*.*";
+            ofd.Filter = "All files|*.*";
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 ReadMSnifferFile(ofd.FileName);
         }

@@ -38,7 +38,7 @@ namespace MapleShark
                     }
                 }
                 MainForm.StructureForm.Tree.SelectedNode = match;
-                if (buffer != null) MainForm.PropertyForm.Properties.SelectedObject = new StructureSegment(buffer, (int)mHex.SelectionStart, (int)mHex.SelectionLength);
+                if (buffer != null) MainForm.PropertyForm.Properties.SelectedObject = new StructureSegment(buffer, (int)mHex.SelectionStart, (int)mHex.SelectionLength, MainForm.Locale);
                 else MainForm.PropertyForm.Properties.SelectedObject = null;
             }
         }
