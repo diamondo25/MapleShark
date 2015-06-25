@@ -470,9 +470,18 @@ namespace MapleShark
                 if (!ses.Saved)
                 {
                     ses.Focus();
-                    if (MessageBox.Show("Do you want to save the session '" + ses.Text + "'?", "MapleShark", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+
+                    DialogResult result = MessageBox.Show(string.Format("Do you want to save the session '{0}'?", ses.Text), "MapleShark", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+                    if (result == DialogResult.Yes)
                     {
                         ses.RunSaveCMD();
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        e.Cancel = true;
+
+                        return;
                     }
                 }
                 mDockPanel.Contents.Remove(ses);

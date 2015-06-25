@@ -61,6 +61,7 @@
             this.recvpropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeLoggedPacketsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.comparePacketsToolStipMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mSaveDialog = new System.Windows.Forms.SaveFileDialog();
             this.mExportDialog = new System.Windows.Forms.SaveFileDialog();
             this.allBeforeThisOneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -356,7 +357,8 @@
             // dataToolStripMenuItem
             // 
             this.dataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.removeLoggedPacketsToolStripMenuItem});
+            this.removeLoggedPacketsToolStripMenuItem,
+            this.comparePacketsToolStipMenuItem});
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
             this.dataToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.dataToolStripMenuItem.Text = "Data";
@@ -367,6 +369,13 @@
             this.removeLoggedPacketsToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.removeLoggedPacketsToolStripMenuItem.Text = "Remove logged packets";
             this.removeLoggedPacketsToolStripMenuItem.Click += new System.EventHandler(this.removeLoggedPacketsToolStripMenuItem_Click);
+            // 
+            // comparePacketsToolStipMenuItem
+            // 
+            this.comparePacketsToolStipMenuItem.Name = "comparePacketsToolStipMenuItem";
+            this.comparePacketsToolStipMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.comparePacketsToolStipMenuItem.Text = "Compare packets";
+            this.comparePacketsToolStipMenuItem.Click += new System.EventHandler(this.comparePacketsToolStipMenuItem_Click);
             // 
             // mSaveDialog
             // 
@@ -499,6 +508,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeLoggedPacketsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem comparePacketsToolStipMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removePacketFromSessionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem thisPacketOnlyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

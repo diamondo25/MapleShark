@@ -850,6 +850,11 @@ namespace MapleShark
             RefreshPackets();
         }
 
+        private void comparePacketsToolStipMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void mFileSeparatorMenu_Click(object sender, EventArgs e)
         {
 
