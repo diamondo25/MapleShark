@@ -101,7 +101,7 @@ namespace MapleShark
             // Get first version known
             for (; version > 0; version--)
             {
-                for (byte subVersion = subversion; subVersion > 0; subVersion--)
+                for (byte subVersion = subversion; subVersion >= 0; subVersion--)
                 {
                     var tuple = new KeyValuePair<ushort, byte>(version, subVersion);
                     if (MapleStoryKeys[locale].ContainsKey(tuple))
@@ -111,8 +111,10 @@ namespace MapleShark
                         for (int i = 0; i < 8; i++)
                             ret[i * 4] = key[i];
 
+                        Console.WriteLine("Using key for version {0}.{1}", version, subVersion);
                         return ret;
                     }
+                    if (subVersion == 0) break;
                 }
             }
             Console.WriteLine("Version {0}.{1} for locale {2} not found!", version, subversion, locale);

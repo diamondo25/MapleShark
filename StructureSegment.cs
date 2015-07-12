@@ -61,7 +61,8 @@ namespace MapleShark
                 return null;
             }
         }
-        public string IpAddress {
+        public string IpAddress
+        {
             get
             {
 
@@ -69,7 +70,7 @@ namespace MapleShark
                 {
                     return string.Format("{0}.{1}.{2}.{3}", mBuffer[0].ToString(), mBuffer[1].ToString(), mBuffer[2].ToString(), mBuffer[3].ToString());
                 }
-                    
+
                 return null;
             }
         }
@@ -109,7 +110,7 @@ namespace MapleShark
                 return null;
             }
         }
-        
+
         public string String
         {
             get

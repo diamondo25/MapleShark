@@ -33,9 +33,12 @@ namespace MapleShark
         public MapleStream(bool pOutbound, ushort pBuild, byte pLocale, byte[] pIV, byte pSubVersion)
         {
             mOutbound = pOutbound;
-            mAES = new MapleAES(pBuild, pLocale, pIV, pSubVersion);
+            if (pOutbound)
+                mAES = new MapleAES(pBuild, pLocale, pIV, pSubVersion);
+            else
+                mAES = new MapleAES((ushort)(0xFFFF - pBuild), pLocale, pIV, pSubVersion);
 
-            if ((pLocale == MapleLocale.TESPIA && pBuild == 40) || 
+            if ((pLocale == MapleLocale.TESPIA && pBuild == 40) ||
                 (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild == 15))
             {
                 // WvsBeta
@@ -49,11 +52,11 @@ namespace MapleShark
                 _usesByteHeader = true;
             }
             else if (
-                pLocale == MapleLocale.TAIWAN || 
-                pLocale == MapleLocale.CHINA || 
+                pLocale == MapleLocale.TAIWAN ||
+                pLocale == MapleLocale.CHINA ||
                 pLocale == MapleLocale.TESPIA ||
-                pLocale == MapleLocale.JAPAN || 
-                (pLocale == MapleLocale.GLOBAL && (short)pBuild >= 149) || 
+                pLocale == MapleLocale.JAPAN ||
+                (pLocale == MapleLocale.GLOBAL && (short)pBuild >= 149) ||
                 (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
                 (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild >= 144))
             {
@@ -70,6 +73,8 @@ namespace MapleShark
                 // All others lol
                 _transformMethod = TransformMethod.AES | TransformMethod.MAPLE_CRYPTO | TransformMethod.SHIFT_IV;
             }
+
+            Console.WriteLine("Using transform methods: {0}", _transformMethod);
         }
 
         public void Append(byte[] pBuffer) { Append(pBuffer, 0, pBuffer.Length); }

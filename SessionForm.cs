@@ -235,8 +235,8 @@ namespace MapleShark
                 }
                 else if (patchLocation.All(character => { return character >= '0' && character <= '9'; }))
                 {
-		    if (!byte.TryParse(patchLocation, out subVersion))
-		        Console.WriteLine("Failed to parse subVersion");
+                    if (!byte.TryParse(patchLocation, out subVersion))
+                        Console.WriteLine("Failed to parse subVersion");
                 }
 
                 mBuild = version;
@@ -245,7 +245,7 @@ namespace MapleShark
                 mPatchLocation = patchLocation;
 
                 mOutboundStream = new MapleStream(true, mBuild, mLocale, localIV, subVersion);
-                mInboundStream = new MapleStream(false, (ushort)(0xFFFF - mBuild), mLocale, remoteIV, subVersion);
+                mInboundStream = new MapleStream(false, mBuild, mLocale, remoteIV, subVersion);
 
                 // Generate HandShake packet
                 Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, false, 0xFFFF);
@@ -510,6 +510,11 @@ namespace MapleShark
             if (previous != null) previous.EnsureVisible();
         }
 
+        public void ReselectPacket()
+        {
+            mPacketList_SelectedIndexChanged(null, null);
+        }
+
         private Regex _packetRegex = new Regex(@"\[(.{1,2}):(.{1,2}):(.{1,2})\]\[(\d+)\] (Recv|Send):  (.+)");
         internal void ParseMSnifferLine(string packetLine)
         {
@@ -532,10 +537,10 @@ namespace MapleShark
 
             for (var i = 2; i < packetLength; i++)
             {
-                 buffer[i - 2] = byte.Parse(bytesText[i], System.Globalization.NumberStyles.HexNumber);
+                buffer[i - 2] = byte.Parse(bytesText[i], System.Globalization.NumberStyles.HexNumber);
             }
 
-            
+
 
             Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, outbound, opcode);
             MaplePacket packet = new MaplePacket(date, outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer, 0, 0);
@@ -572,7 +577,8 @@ namespace MapleShark
                 writer.Write(mBuild);
                 writer.Write(mPatchLocation);
 
-                mPackets.ForEach(p => {
+                mPackets.ForEach(p =>
+                {
                     writer.Write((ulong)p.Timestamp.Ticks);
                     writer.Write((ushort)p.Length);
                     writer.Write((ushort)p.Opcode);
@@ -671,7 +677,13 @@ namespace MapleShark
 
         private void mPacketList_SelectedIndexChanged(object pSender, EventArgs pArgs)
         {
-            if (mPacketList.SelectedItems.Count == 0) { MainForm.DataForm.HexBox.ByteProvider = null; MainForm.StructureForm.Tree.Nodes.Clear(); MainForm.PropertyForm.Properties.SelectedObject = null; return; }
+            if (mPacketList.SelectedItems.Count == 0)
+            {
+                MainForm.DataForm.HexBox.ByteProvider = null;
+                MainForm.StructureForm.Tree.Nodes.Clear();
+                MainForm.PropertyForm.Properties.SelectedObject = null;
+                return;
+            }
             MainForm.DataForm.HexBox.ByteProvider = new DynamicByteProvider((mPacketList.SelectedItems[0] as MaplePacket).Buffer);
             MainForm.StructureForm.ParseMaplePacket(mPacketList.SelectedItems[0] as MaplePacket);
         }
@@ -681,9 +693,9 @@ namespace MapleShark
             if (mPacketList.SelectedIndices.Count == 0) return;
             MaplePacket packet = mPacketList.SelectedItems[0] as MaplePacket;
             string scriptPath = "Scripts" + Path.DirectorySeparatorChar + mLocale.ToString() + Path.DirectorySeparatorChar + mBuild.ToString() + Path.DirectorySeparatorChar + (packet.Outbound ? "Outbound" : "Inbound") + Path.DirectorySeparatorChar + "0x" + packet.Opcode.ToString("X4") + ".txt";
-           
+
             if (!Directory.Exists(Path.GetDirectoryName(scriptPath))) Directory.CreateDirectory(Path.GetDirectoryName(scriptPath));
-            
+
             ScriptForm script = new ScriptForm(scriptPath, packet);
             script.FormClosed += Script_FormClosed;
             script.Show(DockPanel, new Rectangle(MainForm.Location, new Size(600, 300)));
@@ -879,7 +891,7 @@ namespace MapleShark
         {
             if (mPacketList.SelectedItems.Count == 0) return;
             var packet = mPacketList.SelectedItems[0] as MaplePacket;
-            
+
             for (int i = 0; i < packet.Index; i++)
                 mPackets.Remove(mPacketList.Items[i] as MaplePacket);
             RefreshPackets();

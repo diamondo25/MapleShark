@@ -168,6 +168,7 @@ namespace MapleShark
                  //   session.RefreshPackets();
 
                     mSearchForm.RefreshOpcodes(false);
+                    session.ReselectPacket();
                 }
                 else
                 {

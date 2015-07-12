@@ -35,7 +35,10 @@ namespace MapleShark
 				Definition definition = Config.Instance.GetDefinition(session.Build, session.Locale, kv.First, kv.Second);
                 int addedIndex = mOpcodeCombo.Items.Add(string.Format("{0} 0x{1:X4} {2}", (kv.First ? "Outbound  " : "Inbound   "), kv.Second, definition == null || string.IsNullOrEmpty(definition.Name) ? "" : definition.Name));
 
-                if (selected != null && selected.First == kv.First && selected.Second == kv.Second) mOpcodeCombo.SelectedIndex = addedIndex;
+                if (selected != null && selected.First == kv.First && selected.Second == kv.Second)
+                {
+                    mOpcodeCombo.SelectedIndex = addedIndex;
+                }
             }
         }
 
