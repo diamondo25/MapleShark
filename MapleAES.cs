@@ -40,13 +40,7 @@ namespace MapleShark
             if ((short)pBuild < 0)
                 pBuild = (ushort)(0xFFFF - pBuild);
 
-            if ((pLocale == MapleLocale.GLOBAL && pBuild >= 118) ||
-                (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
-                (pLocale == MapleLocale.TAIWAN && pBuild >= 176) ||
-                (pLocale == MapleLocale.CHINA && pBuild >= 124))
-                mAES.Key = MapleKeys.GetKeyForVersion(pLocale, pBuild, pSubVersion);
-            else
-                mAES.Key = sSecretKey;
+            mAES.Key = MapleKeys.GetKeyForVersion(pLocale, pBuild, pSubVersion) ?? sSecretKey;
 
             mAES.Mode = CipherMode.ECB;
             mAES.Padding = PaddingMode.PKCS7;
