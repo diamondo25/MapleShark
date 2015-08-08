@@ -49,11 +49,11 @@ namespace MapleShark
             {
                 if (File.Exists("noupdate.txt")) throw new Exception(); // Trigger offline file loading
 
-                HttpWebRequest req = WebRequest.Create("http://direct.craftnet.nl/app_updates/get_keys.php?source=SRK&version=4") as HttpWebRequest;
+                var req = WebRequest.Create("http://direct.craftnet.nl/app_updates/get_keys.php?source=SRK&version=4") as HttpWebRequest;
                 req.Proxy = null;
 
-                using (HttpWebResponse response = req.GetResponse() as HttpWebResponse)
-                using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+                using (var response = (HttpWebResponse)req.GetResponse())
+                using (var sr = new StreamReader(response.GetResponseStream()))
                 {
                     string responseText = sr.ReadToEnd();
                     InitByContents(responseText);
