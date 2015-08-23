@@ -97,61 +97,60 @@
             this.mFileSeparatorMenu,
             this.mFileQuit});
             this.mFileMenu.Name = "mFileMenu";
-            this.mFileMenu.Size = new System.Drawing.Size(38, 20);
+            this.mFileMenu.Size = new System.Drawing.Size(37, 20);
             this.mFileMenu.Text = "&File";
             // 
             // mFileOpenMenu
             // 
             this.mFileOpenMenu.Name = "mFileOpenMenu";
             this.mFileOpenMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mFileOpenMenu.Size = new System.Drawing.Size(229, 22);
+            this.mFileOpenMenu.Size = new System.Drawing.Size(218, 22);
             this.mFileOpenMenu.Text = "&Open";
             this.mFileOpenMenu.Click += new System.EventHandler(this.mFileOpenMenu_Click);
             // 
             // mFileImportMenu
             // 
             this.mFileImportMenu.Name = "mFileImportMenu";
-            this.mFileImportMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.mFileImportMenu.Size = new System.Drawing.Size(229, 22);
-            this.mFileImportMenu.Text = "&Import";
+            this.mFileImportMenu.Size = new System.Drawing.Size(218, 22);
+            this.mFileImportMenu.Text = "Import .pcap file";
             this.mFileImportMenu.Click += new System.EventHandler(this.mFileImportMenu_Click);
             // 
             // importJavapropertiesFileToolStripMenuItem
             // 
             this.importJavapropertiesFileToolStripMenuItem.Name = "importJavapropertiesFileToolStripMenuItem";
-            this.importJavapropertiesFileToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.importJavapropertiesFileToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.importJavapropertiesFileToolStripMenuItem.Text = "Import Java *.properties file";
             this.importJavapropertiesFileToolStripMenuItem.Click += new System.EventHandler(this.importJavapropertiesFileToolStripMenuItem_Click);
             // 
             // importMSnifferToolStripMenuItem
             // 
             this.importMSnifferToolStripMenuItem.Name = "importMSnifferToolStripMenuItem";
-            this.importMSnifferToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.importMSnifferToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.importMSnifferToolStripMenuItem.Text = "Import MSniffer logfile";
             this.importMSnifferToolStripMenuItem.Click += new System.EventHandler(this.importMSnifferToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(226, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(215, 6);
             // 
             // setupToolStripMenuItem
             // 
             this.setupToolStripMenuItem.Name = "setupToolStripMenuItem";
-            this.setupToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.setupToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.setupToolStripMenuItem.Text = "MapleShark Setup";
             this.setupToolStripMenuItem.Click += new System.EventHandler(this.setupToolStripMenuItem_Click);
             // 
             // mFileSeparatorMenu
             // 
             this.mFileSeparatorMenu.Name = "mFileSeparatorMenu";
-            this.mFileSeparatorMenu.Size = new System.Drawing.Size(226, 6);
+            this.mFileSeparatorMenu.Size = new System.Drawing.Size(215, 6);
             // 
             // mFileQuit
             // 
             this.mFileQuit.Name = "mFileQuit";
             this.mFileQuit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.mFileQuit.Size = new System.Drawing.Size(229, 22);
+            this.mFileQuit.Size = new System.Drawing.Size(218, 22);
             this.mFileQuit.Text = "&Quit";
             this.mFileQuit.Click += new System.EventHandler(this.mFileQuit_Click);
             // 
@@ -163,7 +162,7 @@
             this.mViewStructureMenu,
             this.mViewPropertiesMenu});
             this.mViewMenu.Name = "mViewMenu";
-            this.mViewMenu.Size = new System.Drawing.Size(46, 20);
+            this.mViewMenu.Size = new System.Drawing.Size(44, 20);
             this.mViewMenu.Text = "&View";
             this.mViewMenu.DropDownOpening += new System.EventHandler(this.mViewMenu_DropDownOpening);
             // 
@@ -174,7 +173,7 @@
             this.mViewSearchMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mViewSearchMenu.Name = "mViewSearchMenu";
             this.mViewSearchMenu.ShortcutKeys = System.Windows.Forms.Keys.F9;
-            this.mViewSearchMenu.Size = new System.Drawing.Size(158, 22);
+            this.mViewSearchMenu.Size = new System.Drawing.Size(152, 22);
             this.mViewSearchMenu.Text = "Sea&rch";
             this.mViewSearchMenu.CheckedChanged += new System.EventHandler(this.mViewSearchMenu_CheckedChanged);
             // 
@@ -185,7 +184,7 @@
             this.mViewDataMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mViewDataMenu.Name = "mViewDataMenu";
             this.mViewDataMenu.ShortcutKeys = System.Windows.Forms.Keys.F10;
-            this.mViewDataMenu.Size = new System.Drawing.Size(158, 22);
+            this.mViewDataMenu.Size = new System.Drawing.Size(152, 22);
             this.mViewDataMenu.Text = "&Data";
             this.mViewDataMenu.CheckedChanged += new System.EventHandler(this.mViewDataMenu_CheckedChanged);
             // 
@@ -196,7 +195,7 @@
             this.mViewStructureMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mViewStructureMenu.Name = "mViewStructureMenu";
             this.mViewStructureMenu.ShortcutKeys = System.Windows.Forms.Keys.F11;
-            this.mViewStructureMenu.Size = new System.Drawing.Size(158, 22);
+            this.mViewStructureMenu.Size = new System.Drawing.Size(152, 22);
             this.mViewStructureMenu.Text = "&Structure";
             this.mViewStructureMenu.CheckedChanged += new System.EventHandler(this.mViewStructureMenu_CheckedChanged);
             // 
@@ -207,7 +206,7 @@
             this.mViewPropertiesMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mViewPropertiesMenu.Name = "mViewPropertiesMenu";
             this.mViewPropertiesMenu.ShortcutKeys = System.Windows.Forms.Keys.F12;
-            this.mViewPropertiesMenu.Size = new System.Drawing.Size(158, 22);
+            this.mViewPropertiesMenu.Size = new System.Drawing.Size(152, 22);
             this.mViewPropertiesMenu.Text = "&Properties";
             this.mViewPropertiesMenu.CheckedChanged += new System.EventHandler(this.mViewPropertiesMenu_CheckedChanged);
             // 
@@ -276,7 +275,7 @@
             this.mStopStartButton.Image = global::MapleShark.Properties.Resources.Button_Blank_Red_icon;
             this.mStopStartButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mStopStartButton.Name = "mStopStartButton";
-            this.mStopStartButton.Size = new System.Drawing.Size(98, 22);
+            this.mStopStartButton.Size = new System.Drawing.Size(94, 22);
             this.mStopStartButton.Text = "Stop sniffing";
             this.mStopStartButton.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -306,7 +305,7 @@
             this.mDockPanel.DockTopPortion = 75D;
             this.mDockPanel.Location = new System.Drawing.Point(0, 49);
             this.mDockPanel.Name = "mDockPanel";
-            this.mDockPanel.Size = new System.Drawing.Size(944, 562);
+            this.mDockPanel.Size = new System.Drawing.Size(944, 613);
             dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
             dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
             autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -357,9 +356,9 @@
             // MainForm
             // 
             this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(944, 611);
+            this.ClientSize = new System.Drawing.Size(944, 662);
             this.Controls.Add(this.mDockPanel);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.mMenu);

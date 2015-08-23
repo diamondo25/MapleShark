@@ -40,14 +40,11 @@ namespace MapleShark
                 }
             };
 
-
-            MainForm.StartupArguments = pArgs;
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             if (new frmSplash().ShowDialog() == DialogResult.OK)
-                Application.Run(new MainForm());
+                Application.Run(new MainForm(pArgs));
         }
 
 

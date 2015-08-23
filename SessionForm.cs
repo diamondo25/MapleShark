@@ -30,7 +30,6 @@ namespace MapleShark
 
         private string mFilename = null;
         private bool mTerminated = false;
-        //private bool mSavedAfterTermination = false;
         private ushort mLocalPort = 0;
         private ushort mRemotePort = 0;
         private ushort mProxyPort = 0;
@@ -350,6 +349,9 @@ namespace MapleShark
                         refreshOpcodes = true;
                     }
                     if (definition != null && !mViewIgnoredMenu.Checked && definition.Ignore) continue;
+                    if (packet.Outbound && !mViewOutboundMenu.Checked) continue;
+                    if (!packet.Outbound && !mViewInboundMenu.Checked) continue;
+
                     mPacketList.Items.Add(packet);
                     if (mPacketList.SelectedItems.Count == 0) packet.EnsureVisible();
                 }
@@ -496,6 +498,7 @@ namespace MapleShark
                 MaplePacket packet = mPackets[index];
                 if (packet.Outbound && !mViewOutboundMenu.Checked) continue;
                 if (!packet.Outbound && !mViewInboundMenu.Checked) continue;
+
                 Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, packet.Outbound, packet.Opcode);
                 packet.Name = definition == null ? "" : definition.Name;
                 if (!mOpcodes.Exists(kv => kv.First == packet.Outbound && kv.Second == packet.Opcode)) mOpcodes.Add(new Pair<bool, ushort>(packet.Outbound, packet.Opcode));

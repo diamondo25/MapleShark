@@ -27,12 +27,14 @@ namespace MapleShark
         private StructureForm mStructureForm = new StructureForm();
         private PropertyForm mPropertyForm = new PropertyForm();
 
-        public static string[] StartupArguments = null;
+        private string[] _startupArguments = null;
 
-        public MainForm()
+        public MainForm(string[] startupArguments)
         {
             InitializeComponent();
             Text = "MapleShark " + Program.AssemblyVersion;
+
+            _startupArguments = startupArguments;
         }
 
         public SearchForm SearchForm { get { return mSearchForm; } }
@@ -142,7 +144,7 @@ namespace MapleShark
             rightPane2.Show();
 
 
-            foreach (string arg in StartupArguments)
+            foreach (string arg in _startupArguments)
             {
                 SessionForm session = NewSession();
                 session.OpenReadOnly(arg);
