@@ -10,9 +10,6 @@ namespace MapleShark
         public string Interface = "";
         public ushort LowPort = 8484;
         public ushort HighPort = 8989;
-        
-        [System.Obsolete]
-        public List<Definition> Definitions = new List<Definition>();
 
         [XmlIgnore]
         public bool LoadedFromFile = false;
@@ -57,21 +54,6 @@ namespace MapleShark
 
         internal void Save()
         {
-            // Remove useless definitions
-            if (Definitions.Count > 0)
-            {
-                Definitions.RemoveAll(d =>
-                {
-                    return d.Locale <= 0 || d.Locale >= 11;
-                });
-
-
-                Definitions.ForEach(d => DefinitionsContainer.Instance.SaveDefinition(d));
-                DefinitionsContainer.Instance.Save();
-
-                Definitions.Clear();
-            }
-
             XmlWriterSettings xws = new XmlWriterSettings()
             {
                 Indent = true,

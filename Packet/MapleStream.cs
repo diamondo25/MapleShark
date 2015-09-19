@@ -149,12 +149,12 @@ namespace MapleShark
                             byte temp = pBuffer[index2];
                             temp -= 0x48;
                             temp = (byte)(~temp);
-                            temp = temp.RollLeft(length & 0xFF);
+                            temp = RollLeft(temp,length & 0xFF);
                             secondFeedback = temp;
                             temp ^= firstFeedback;
                             firstFeedback = secondFeedback;
                             temp -= length;
-                            temp = temp.RollRight(3);
+                            temp = RollRight(temp,3);
                             pBuffer[index2] = temp;
                             --length;
                         }
@@ -164,13 +164,13 @@ namespace MapleShark
                         for (int index2 = pBuffer.Length - 1; index2 >= 0; --index2)
                         {
                             byte temp = pBuffer[index2];
-                            temp = temp.RollLeft(3);
+                            temp = RollLeft(temp,3);
                             temp ^= 0x13;
                             secondFeedback = temp;
                             temp ^= firstFeedback;
                             firstFeedback = secondFeedback;
                             temp -= length;
-                            temp = temp.RollRight(4);
+                            temp = RollRight(temp,4);
                             pBuffer[index2] = temp;
                             --length;
                         }
@@ -183,6 +183,18 @@ namespace MapleShark
 
             if ((pTransformLocale & TransformMethod.SHIFT_IV) != 0) mAES.ShiftIV();
             if ((pTransformLocale & TransformMethod.SHIFT_IV_OLD) != 0) mAES.ShiftIVOld();
+        }
+
+        public static byte RollLeft(byte pThis, int pCount)
+        {
+            uint overflow = ((uint)pThis) << (pCount % 8);
+            return (byte)((overflow & 0xFF) | (overflow >> 8));
+        }
+
+        public static byte RollRight(byte pThis, int pCount)
+        {
+            uint overflow = (((uint)pThis) << 8) >> (pCount % 8);
+            return (byte)((overflow & 0xFF) | (overflow >> 8));
         }
     }
 }

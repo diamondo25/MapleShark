@@ -29,11 +29,12 @@ namespace MapleShark
                 return;
             }
 
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += (sender, args) =>
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Exception e = (Exception)args.ExceptionObject;
+
                 System.IO.File.WriteAllText("MapleShark Error.txt", e.ToString());
+
                 if (MessageBox.Show("Exception occurred. Open error in notepad?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     System.Diagnostics.Process.Start("notepad", "\"MapleShark Error.txt\"");
@@ -43,10 +44,13 @@ namespace MapleShark
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (new frmSplash().ShowDialog() == DialogResult.OK)
-                Application.Run(new MainForm(pArgs));
-        }
+            using (var frm = new frmSplash())
+            {
+                if (frm.ShowDialog() == DialogResult.OK)
+                    Application.Run(new MainForm(pArgs));
 
+            }
+        }
 
         internal static string AssemblyVersion { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
         internal static string AssemblyCopyright { get { return ((AssemblyCopyrightAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0]).Copyright; } }
