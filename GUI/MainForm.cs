@@ -167,7 +167,7 @@ namespace MapleShark
                 mSearchForm.ComboBox.Items.Clear();
                 if (session != null)
                 {
-                 //   session.RefreshPackets();
+                    //   session.RefreshPackets();
 
                     mSearchForm.RefreshOpcodes(false);
                     session.ReselectPacket();
@@ -298,7 +298,7 @@ namespace MapleShark
                 mTimer.Enabled = false;
 
                 DateTime now = DateTime.Now;
-                foreach (SessionForm ses in MdiChildren) 
+                foreach (SessionForm ses in MdiChildren)
                 {
                     if (ses.CloseMe(now))
                         closes.Add(ses);
@@ -328,12 +328,12 @@ namespace MapleShark
                             session = Array.Find(MdiChildren, f => (f as SessionForm).MatchTCPPacket(tcpPacket)) as SessionForm;
                             if (session != null)
                             {
-                               var res =  session.BufferTCPPacket(tcpPacket, packet.Timeval.Date);
+                                var res = session.BufferTCPPacket(tcpPacket, packet.Timeval.Date);
 
-                               if (res == SessionForm.Results.CloseMe)
-                               {
-                                   session.Close();
-                               }
+                                if (res == SessionForm.Results.CloseMe)
+                                {
+                                    session.Close();
+                                }
                             }
                         }
                     }
@@ -455,7 +455,7 @@ namespace MapleShark
         {
             // Try to close all sessions
             List<SessionForm> sessionForms = new List<SessionForm>();
-            
+
             foreach (var form in mDockPanel.Contents)
                 if (form is SessionForm)
                     sessionForms.Add(form as SessionForm);
@@ -532,7 +532,7 @@ namespace MapleShark
                         // Most likely capturing text
                         var matches = captureRegex.Match(line);
                         if (matches.Captures.Count == 0) continue;
-                        
+
                         Console.WriteLine("Version: {0}.{1} IP {2} Port {3}", matches.Groups[1].Value, matches.Groups[4].Value, matches.Groups[2].Value, matches.Groups[3].Value);
 
                         if (currentSession != null)

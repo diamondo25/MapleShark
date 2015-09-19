@@ -33,7 +33,7 @@ namespace MapleShark
             Build = pBuild;
             Opcode = pOpcode;
             Buffer = pBuffer;
-			Locale = pLocale;
+            Locale = pLocale;
             PreDecodeIV = pPreDecodeIV;
             PostDecodeIV = pPostDecodeIV;
         }
@@ -153,7 +153,7 @@ namespace MapleShark
         public bool ReadBytes(byte[] pBytes, int pStart, int pLength)
         {
             if (Cursor + pLength > Length) return false;
-            
+
             System.Buffer.BlockCopy(Buffer, Cursor, pBytes, pStart, pLength);
             Cursor += pLength;
             return true;

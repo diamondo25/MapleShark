@@ -99,7 +99,7 @@ namespace MapleShark
             }
 
             ushort packetSize = mAES.GetHeaderLength(mBuffer, 0, pBuild == 255 && pLocale == 1);
-            if (mCursor < (packetSize + 4)) 
+            if (mCursor < (packetSize + 4))
                 return null;
             byte[] packetBuffer = new byte[packetSize];
             Buffer.BlockCopy(mBuffer, 4, packetBuffer, 0, packetSize);
@@ -149,12 +149,12 @@ namespace MapleShark
                             byte temp = pBuffer[index2];
                             temp -= 0x48;
                             temp = (byte)(~temp);
-                            temp = RollLeft(temp,length & 0xFF);
+                            temp = RollLeft(temp, length & 0xFF);
                             secondFeedback = temp;
                             temp ^= firstFeedback;
                             firstFeedback = secondFeedback;
                             temp -= length;
-                            temp = RollRight(temp,3);
+                            temp = RollRight(temp, 3);
                             pBuffer[index2] = temp;
                             --length;
                         }
@@ -164,13 +164,13 @@ namespace MapleShark
                         for (int index2 = pBuffer.Length - 1; index2 >= 0; --index2)
                         {
                             byte temp = pBuffer[index2];
-                            temp = RollLeft(temp,3);
+                            temp = RollLeft(temp, 3);
                             temp ^= 0x13;
                             secondFeedback = temp;
                             temp ^= firstFeedback;
                             firstFeedback = secondFeedback;
                             temp -= length;
-                            temp = RollRight(temp,4);
+                            temp = RollRight(temp, 4);
                             pBuffer[index2] = temp;
                             --length;
                         }

@@ -346,7 +346,7 @@ namespace MapleShark
                 {
                     mPackets.Add(packet);
                     Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, packet.Outbound, packet.Opcode);
-                    if (!mOpcodes.Exists(op =>op.Outbound == packet.Outbound && op.Header == packet.Opcode))
+                    if (!mOpcodes.Exists(op => op.Outbound == packet.Outbound && op.Header == packet.Opcode))
                     {
                         mOpcodes.Add(new Opcode(packet.Outbound, packet.Opcode));
                         refreshOpcodes = true;

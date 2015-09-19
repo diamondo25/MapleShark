@@ -30,7 +30,8 @@ namespace MapleShark
             if (!_definitions.ContainsKey(pDefinition.Locale)) _definitions.Add(pDefinition.Locale, new Dictionary<ushort, List<Definition>>());
             if (!_definitions[pDefinition.Locale].ContainsKey(pDefinition.Build)) _definitions[pDefinition.Locale].Add(pDefinition.Build, new List<Definition>());
 
-            _definitions[pDefinition.Locale][pDefinition.Build].RemoveAll(d => {
+            _definitions[pDefinition.Locale][pDefinition.Build].RemoveAll(d =>
+            {
                 return d.Outbound == pDefinition.Outbound && d.Opcode == pDefinition.Opcode;
             });
 
@@ -44,14 +45,14 @@ namespace MapleShark
 
         private void LoadDefinitions()
         {
-            if (!Directory.Exists("Scripts")) 
+            if (!Directory.Exists("Scripts"))
                 return;
 
             foreach (var localePath in Directory.GetDirectories(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "Scripts"))
             {
                 string localeDirName = localePath.Remove(0, localePath.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                 byte locale = 0;
-                if (!byte.TryParse(localeDirName, out locale)) 
+                if (!byte.TryParse(localeDirName, out locale))
                     continue;
 
                 _definitions.Add(locale, new Dictionary<ushort, List<Definition>>());
@@ -60,7 +61,7 @@ namespace MapleShark
                 {
                     string versionDirName = versionPath.Remove(0, versionPath.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                     ushort version = 0;
-                    if (!ushort.TryParse(versionDirName, out version)) 
+                    if (!ushort.TryParse(versionDirName, out version))
                         continue;
 
 
@@ -86,7 +87,7 @@ namespace MapleShark
                 foreach (var kvpVersion in kvpLocale.Value)
                 {
                     var path = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "Scripts" + Path.DirectorySeparatorChar + kvpLocale.Key + Path.DirectorySeparatorChar + kvpVersion.Key;
-                    
+
                     if (!Directory.Exists(path))
                         Directory.CreateDirectory(path);
 
@@ -112,7 +113,7 @@ namespace MapleShark
         internal void SaveProperties()
         {
             Dictionary<ushort, Dictionary<ushort, SortedDictionary<ushort, string>>>[] headerList = new Dictionary<ushort, Dictionary<ushort, SortedDictionary<ushort, string>>>[2];
-            
+
             for (int i = 0; i < 2; i++)
             {
                 headerList[i] = new Dictionary<ushort, Dictionary<ushort, SortedDictionary<ushort, string>>>();
