@@ -86,17 +86,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractPacket.cs" />
-    <Compile Include="AppUpdates.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="DataForm.cs">
+    <Compile Include="Tools\AppUpdates.cs" />
+    <Compile Include="Tools\Config.cs" />
+    <Compile Include="GUI\DataForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DataForm.Designer.cs">
+    <Compile Include="GUI\DataForm.Designer.cs">
       <DependentUpon>DataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Definition.cs" />
-    <Compile Include="DefinitionsContainer.cs" />
+    <Compile Include="Logging\Definition.cs" />
+    <Compile Include="Logging\DefinitionsContainer.cs" />
     <Compile Include="Docking\AutoHideStripBase.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -194,26 +193,29 @@
     </Compile>
     <Compile Include="Docking\Win32\Enums.cs" />
     <Compile Include="Docking\Win32\NativeMethods.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="frmImportProps.cs">
+    <Compile Include="GUI\DoubleBufferedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GUI\frmImportProps.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmImportProps.Designer.cs">
+    <Compile Include="GUI\frmImportProps.Designer.cs">
       <DependentUpon>frmImportProps.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmLocale.cs">
+    <Compile Include="GUI\frmLocale.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmLocale.Designer.cs">
+    <Compile Include="GUI\frmLocale.Designer.cs">
       <DependentUpon>frmLocale.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSplash.cs">
+    <Compile Include="GUI\frmSplash.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSplash.Designer.cs">
+    <Compile Include="GUI\frmSplash.Designer.cs">
       <DependentUpon>frmSplash.cs</DependentUpon>
     </Compile>
-    <Compile Include="MapleKeys.cs" />
+    <Compile Include="Logging\Opcode.cs" />
+    <Compile Include="Packet\MapleKeys.cs" />
     <Compile Include="HexBox\ByteCollection.cs" />
     <Compile Include="HexBox\DataBlock.cs" />
     <Compile Include="HexBox\DataMap.cs" />
@@ -228,33 +230,32 @@
     <Compile Include="HexBox\IByteProvider.cs" />
     <Compile Include="HexBox\MemoryDataBlock.cs" />
     <Compile Include="HexBox\NativeMethods.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="GUI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="GUI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MapleAES.cs" />
-    <Compile Include="MapleLocales.cs" />
-    <Compile Include="MaplePacket.cs" />
-    <Compile Include="MapleStream.cs" />
-    <Compile Include="OutputForm.cs">
+    <Compile Include="Packet\MapleAES.cs" />
+    <Compile Include="Packet\MapleLocales.cs" />
+    <Compile Include="Logging\MaplePacket.cs" />
+    <Compile Include="Packet\MapleStream.cs" />
+    <Compile Include="GUI\OutputForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OutputForm.Designer.cs">
+    <Compile Include="GUI\OutputForm.Designer.cs">
       <DependentUpon>OutputForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PacketReader.cs" />
-    <Compile Include="Pair.cs" />
+    <Compile Include="Tools\PacketReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmImportProps.resx">
+    <EmbeddedResource Include="GUI\frmImportProps.resx">
       <DependentUpon>frmImportProps.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmLocale.resx">
+    <EmbeddedResource Include="GUI\frmLocale.resx">
       <DependentUpon>frmLocale.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSplash.resx">
+    <EmbeddedResource Include="GUI\frmSplash.resx">
       <DependentUpon>frmSplash.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HexBox\HexBox.resx">
@@ -278,14 +279,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="PropertyForm.cs">
+    <Compile Include="GUI\PropertyForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PropertyForm.Designer.cs">
+    <Compile Include="GUI\PropertyForm.Designer.cs">
       <DependentUpon>PropertyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SafeNativeMethods.cs" />
-    <Compile Include="ScriptAPI.cs" />
+    <Compile Include="SharpPcap\SafeNativeMethods.cs" />
+    <Compile Include="Tools\ScriptAPI.cs" />
     <Compile Include="ScriptDotNet\AST\AScriptAstTemplate.cs" />
     <Compile Include="ScriptDotNet\AST\ScriptArrayConstructor.cs" />
     <Compile Include="ScriptDotNet\AST\ScriptArrayResolution.cs" />
@@ -451,34 +452,34 @@
     <Compile Include="ScriptDotNet\Runtime\ScriptContext.cs" />
     <Compile Include="ScriptDotNet\Script.cs" />
     <Compile Include="ScriptDotNet\ScriptGrammar.cs" />
-    <Compile Include="ScriptForm.cs">
+    <Compile Include="GUI\ScriptForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ScriptForm.Designer.cs">
+    <Compile Include="GUI\ScriptForm.Designer.cs">
       <DependentUpon>ScriptForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SearchForm.cs">
+    <Compile Include="GUI\SearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SearchForm.Designer.cs">
+    <Compile Include="GUI\SearchForm.Designer.cs">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SessionForm.cs">
+    <Compile Include="GUI\SessionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SessionForm.Designer.cs">
+    <Compile Include="GUI\SessionForm.Designer.cs">
       <DependentUpon>SessionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SessionInformation.cs">
+    <Compile Include="GUI\SessionInformation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SessionInformation.Designer.cs">
+    <Compile Include="GUI\SessionInformation.Designer.cs">
       <DependentUpon>SessionInformation.cs</DependentUpon>
     </Compile>
-    <Compile Include="SetupForm.cs">
+    <Compile Include="GUI\SetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SetupForm.Designer.cs">
+    <Compile Include="GUI\SetupForm.Designer.cs">
       <DependentUpon>SetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SharpPcap\AirPcap\AirPcapAdapterBus.cs" />
@@ -549,14 +550,14 @@
     <Compile Include="SharpPcap\WinPcap\UnmanagedStructures.cs" />
     <Compile Include="SharpPcap\WinPcap\WinPcapDevice.cs" />
     <Compile Include="SharpPcap\WinPcap\WinPcapDeviceList.cs" />
-    <Compile Include="StructureForm.cs">
+    <Compile Include="GUI\StructureForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StructureForm.Designer.cs">
+    <Compile Include="GUI\StructureForm.Designer.cs">
       <DependentUpon>StructureForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="StructureNode.cs" />
-    <Compile Include="StructureSegment.cs" />
+    <Compile Include="Logging\StructureNode.cs" />
+    <Compile Include="Logging\StructureSegment.cs" />
     <Compile Include="SyntaxBox\Classes\Caret.cs" />
     <Compile Include="SyntaxBox\Classes\KeyboadActionList.cs" />
     <Compile Include="SyntaxBox\Classes\KeyboardAction.cs" />
@@ -719,7 +720,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ScriptDotNet\RuntimeConfig.xml" />
-    <EmbeddedResource Include="SessionInformation.resx">
+    <EmbeddedResource Include="GUI\SessionInformation.resx">
       <DependentUpon>SessionInformation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SyntaxBox\Controls\Autolist\AutoListForm.resx">
@@ -811,7 +812,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DataForm.resx">
+    <EmbeddedResource Include="GUI\DataForm.resx">
       <DependentUpon>DataForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -821,36 +822,36 @@
     <EmbeddedResource Include="Docking\Strings.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="GUI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="OutputForm.resx">
+    <EmbeddedResource Include="GUI\OutputForm.resx">
       <DependentUpon>OutputForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PropertyForm.resx">
+    <EmbeddedResource Include="GUI\PropertyForm.resx">
       <DependentUpon>PropertyForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ScriptForm.resx">
+    <EmbeddedResource Include="GUI\ScriptForm.resx">
       <DependentUpon>ScriptForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptSyntax.txt" />
-    <EmbeddedResource Include="SearchForm.resx">
+    <EmbeddedResource Include="GUI\SearchForm.resx">
       <DependentUpon>SearchForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SessionForm.resx">
+    <EmbeddedResource Include="GUI\SessionForm.resx">
       <DependentUpon>SessionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SetupForm.resx">
+    <EmbeddedResource Include="GUI\SetupForm.resx">
       <DependentUpon>SetupForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="StructureForm.resx">
+    <EmbeddedResource Include="GUI\StructureForm.resx">
       <DependentUpon>StructureForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -931,6 +932,7 @@
       <DefaultIcon>Shark.ico</DefaultIcon>
     </FileAssociation>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

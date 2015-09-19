@@ -26,16 +26,16 @@ namespace MapleShark
         public void RefreshOpcodes(bool pReselect)
         {
             SessionForm session = DockPanel.ActiveDocument as SessionForm;
-            Pair<bool, ushort> selected = pReselect && session != null && mOpcodeCombo.SelectedIndex >= 0 && session.Opcodes.Count > mOpcodeCombo.SelectedIndex ? session.Opcodes[mOpcodeCombo.SelectedIndex] : null;
+            Opcode selected = pReselect && session != null && mOpcodeCombo.SelectedIndex >= 0 && session.Opcodes.Count > mOpcodeCombo.SelectedIndex ? session.Opcodes[mOpcodeCombo.SelectedIndex] : null;
             mOpcodeCombo.Items.Clear();
             if (session == null) return;
             session.UpdateOpcodeList();
-            foreach (Pair<bool, ushort> kv in session.Opcodes)
+            foreach (Opcode op in session.Opcodes)
             {
-				Definition definition = Config.Instance.GetDefinition(session.Build, session.Locale, kv.First, kv.Second);
-                int addedIndex = mOpcodeCombo.Items.Add(string.Format("{0} 0x{1:X4} {2}", (kv.First ? "Outbound  " : "Inbound   "), kv.Second, definition == null || string.IsNullOrEmpty(definition.Name) ? "" : definition.Name));
+				Definition definition = Config.Instance.GetDefinition(session.Build, session.Locale, op.Outbound, op.Header);
+                int addedIndex = mOpcodeCombo.Items.Add(string.Format("{0} 0x{1:X4} {2}", (op.Outbound ? "Outbound  " : "Inbound   "), op.Header, definition == null || string.IsNullOrEmpty(definition.Name) ? "" : definition.Name));
 
-                if (selected != null && selected.First == kv.First && selected.Second == kv.Second)
+                if (selected != null && selected.Outbound == op.Outbound && selected.Header == op.Header)
                 {
                     mOpcodeCombo.SelectedIndex = addedIndex;
                 }
@@ -52,12 +52,12 @@ namespace MapleShark
             SessionForm session = DockPanel.ActiveDocument as SessionForm;
             if (session == null || mOpcodeCombo.SelectedIndex == -1) 
                 return;
-            Pair<bool, ushort> search = (DockPanel.ActiveDocument as SessionForm).Opcodes[mOpcodeCombo.SelectedIndex];
+            Opcode search = (DockPanel.ActiveDocument as SessionForm).Opcodes[mOpcodeCombo.SelectedIndex];
             int initialIndex = session.ListView.SelectedIndices.Count == 0 ? 0 : session.ListView.SelectedIndices[0] + 1;
             for (int index = initialIndex; index < session.ListView.Items.Count; ++index)
             {
                 MaplePacket packet = session.ListView.Items[index] as MaplePacket;
-                if (packet.Outbound == search.First && packet.Opcode == search.Second)
+                if (packet.Outbound == search.Outbound && packet.Opcode == search.Header)
                 {
                     session.ListView.SelectedIndices.Clear();
                     session.ListView.SelectedIndices.Add(index);
@@ -130,12 +130,12 @@ namespace MapleShark
             SessionForm session = DockPanel.ActiveDocument as SessionForm;
             if (session == null || mOpcodeCombo.SelectedIndex == -1)
                 return;
-            Pair<bool, ushort> search = (DockPanel.ActiveDocument as SessionForm).Opcodes[mOpcodeCombo.SelectedIndex];
+           Opcode search = (DockPanel.ActiveDocument as SessionForm).Opcodes[mOpcodeCombo.SelectedIndex];
             int initialIndex = session.ListView.SelectedIndices.Count == 0 ? 0 : session.ListView.SelectedIndices[0];
             for (int index = initialIndex - 1; index > 0; --index)
             {
                 MaplePacket packet = session.ListView.Items[index] as MaplePacket;
-                if (packet.Outbound == search.First && packet.Opcode == search.Second)
+                if (packet.Outbound == search.Outbound && packet.Opcode == search.Header)
                 {
                     session.ListView.SelectedIndices.Clear();
                     session.ListView.SelectedIndices.Add(index);

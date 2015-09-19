@@ -7,8 +7,10 @@ namespace MapleLib.PacketLib
 	/// <summary>
 	/// Class to handle reading data from a packet
 	/// </summary>
-	public class PacketReader : AbstractPacket
+	public class PacketReader
 	{
+        protected MemoryStream _buffer;
+
 		/// <summary>
 		/// The main reader tool
 		/// </summary>
@@ -154,5 +156,9 @@ namespace MapleLib.PacketLib
 		{
 			return ReadString(ReadShort());
 		}
+
+         public byte[] ToArray()
+        {            return _buffer.ToArray();
+        }
 	}
 }
