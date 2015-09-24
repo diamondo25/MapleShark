@@ -58,7 +58,8 @@ namespace MapleShark
                 pLocale == MapleLocale.JAPAN ||
                 (pLocale == MapleLocale.GLOBAL && (short)pBuild >= 149) ||
                 (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
-                (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild >= 144))
+                (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild >= 144) ||
+                (pLocale == MapleLocale.EUROPE && pBuild >= 115))
             {
                 // TWMS / CMS / CMST / JMS / GMS (>= 149)
                 _transformMethod = TransformMethod.AES | TransformMethod.SHIFT_IV;
