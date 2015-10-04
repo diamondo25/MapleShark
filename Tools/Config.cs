@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -28,11 +30,19 @@ namespace MapleShark
                     }
                     else
                     {
-                        using (XmlReader xr = XmlReader.Create("Config.xml"))
+                        try
                         {
-                            XmlSerializer xs = new XmlSerializer(typeof(Config));
-                            sInstance = xs.Deserialize(xr) as Config;
-                            sInstance.LoadedFromFile = true;
+                            using (XmlReader xr = XmlReader.Create("Config.xml"))
+                            {
+                                XmlSerializer xs = new XmlSerializer(typeof(Config));
+                                sInstance = xs.Deserialize(xr) as Config;
+                                sInstance.LoadedFromFile = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("The configuration file is broken and could not be read. You'll have to reconfigure MapleShark... Sorry!\r\nAdditional exception info:\r\n" + ex.ToString(), "MapleShark", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            sInstance = new Config();
                         }
                     }
                 }

@@ -24,9 +24,14 @@ namespace MapleShark
             foreach (LibPcapLiveDevice device in LibPcapLiveDeviceList.Instance)
             {
                 if (!device.Interface.Addresses.Exists(a => a != null && a.Addr != null && a.Addr.ipAddress != null)) continue;
-                int index = mInterfaceCombo.Items.Add(device.Interface.FriendlyName);
-                if (device.Interface.FriendlyName == "Local Area Connection") localAreaConnection = index;
-                if (!selected && (selected = (device.Interface.FriendlyName == Config.Instance.Interface))) mInterfaceCombo.SelectedIndex = index;
+                var devInterface = device.Interface;
+                var friendlyName = devInterface.FriendlyName;
+                var description = devInterface.Description;
+
+                int index = mInterfaceCombo.Items.Add(friendlyName);
+                if ((friendlyName == "Local Area Connection" || friendlyName.Contains("LAN")) && !description.Contains("TAP") && !description.Contains("VPN")) localAreaConnection = index;
+
+                if (!selected && (selected = (friendlyName == Config.Instance.Interface))) mInterfaceCombo.SelectedIndex = index;
             }
 
             if (!selected && localAreaConnection >= 0) mInterfaceCombo.SelectedIndex = localAreaConnection;
