@@ -41,6 +41,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>6ee47235</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,6 +73,10 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ILRepack, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c3e9373f1c31208e, processorArchitecture=MSIL">
+      <HintPath>packages\ILRepack.Lib.2.0.0\lib\net35\ILRepack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PacketDotNet, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\PacketDotNet.0.13.0\lib\net\PacketDotNet.dll</HintPath>
@@ -868,6 +873,38 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets" Condition="Exists('packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets'))" />
+  </Target>
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <InputAssemblies Include="$(OutputPath)\MapleShark.exe" />
+      <InputAssemblies Include="$(OutputPath)\SharpPcap.dll" />
+      <InputAssemblies Include="$(OutputPath)\PacketDotNet.dll" />
+    </ItemGroup>
+
+    <ILRepack
+     Parallel="true"
+     Internalize="true"
+     InputAssemblies="@(InputAssemblies)"
+     TargetKind="SameAsPrimaryAssembly"
+     OutputFile="$(OutputPath)\$(AssemblyName).exe"
+   />
+    
+    <ItemGroup>
+      <DeleteAfterBuild Include="$(OutputPath)\SharpPcap.dll" />
+      <DeleteAfterBuild Include="$(OutputPath)\SharpPcap.xml" />
+      <DeleteAfterBuild Include="$(OutputPath)\PacketDotNet.dll" />
+      <DeleteAfterBuild Include="$(OutputPath)\PacketDotNet.xml" />
+    </ItemGroup>
+    <Delete Files="@(DeleteAfterBuild)" />
+    
+  </Target>
+  <!-- /ILRepack -->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

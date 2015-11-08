@@ -15,6 +15,18 @@ namespace MapleShark
         [STAThread]
         private static void Main(string[] pArgs)
         {
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Exception e = (Exception)args.ExceptionObject;
+
+                System.IO.File.WriteAllText("MapleShark Error.txt", e.ToString());
+
+                if (MessageBox.Show("Exception occurred. Open error in notepad?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    System.Diagnostics.Process.Start("notepad", "\"MapleShark Error.txt\"");
+                }
+            };
+
             try
             {
                 if (LibPcapLiveDeviceList.Instance.Count == 0) throw new Exception();
@@ -28,18 +40,6 @@ namespace MapleShark
                 Environment.Exit(2);
                 return;
             }
-
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-            {
-                Exception e = (Exception)args.ExceptionObject;
-
-                System.IO.File.WriteAllText("MapleShark Error.txt", e.ToString());
-
-                if (MessageBox.Show("Exception occurred. Open error in notepad?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    System.Diagnostics.Process.Start("notepad", "\"MapleShark Error.txt\"");
-                }
-            };
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
