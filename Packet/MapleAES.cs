@@ -61,19 +61,35 @@ namespace MapleShark
             return b;
         }
 
-        public ushort GetHeaderLength(byte[] pBuffer, int pStart, bool pOldHeader)
+        public static int GetHeaderLength(byte[] pBuffer, int pBytesAvailable, bool pOldHeader)
         {
-            if (pOldHeader)
-            {
-                return BitConverter.ToUInt16(pBuffer, pStart + 2);
-            }
+            if (pOldHeader) return 4;
 
-            int length = (int)pBuffer[pStart] |
-                         (int)(pBuffer[pStart + 1] << 8) |
-                         (int)(pBuffer[pStart + 2] << 16) |
-                         (int)(pBuffer[pStart + 3] << 24);
-            length = (length >> 16) ^ (length & 0xFFFF);
-            return (ushort)length;
+            ushort ivBytes = (ushort)(pBuffer[0] | pBuffer[1] << 8);
+            ushort xorredSize = (ushort)(pBuffer[2] | pBuffer[3] << 8);
+            ushort length = (ushort)(xorredSize ^ ivBytes);
+
+            if (length == 0xFF00) return 8;
+            else return 4;
+        }
+
+        public static int GetPacketLength(byte[] pBuffer, int pBytesAvailable, bool pOldHeader)
+        {
+            if (pBytesAvailable < 4) return pBytesAvailable - 4;
+
+            if (pOldHeader) return BitConverter.ToUInt16(pBuffer, 2);
+
+            ushort ivBytes = (ushort)(pBuffer[0] | pBuffer[1] << 8);
+            ushort xorredSize = (ushort)(pBuffer[2] | pBuffer[3] << 8);
+
+            ushort length = (ushort)(xorredSize ^ ivBytes);
+
+            if (length == 0xFF00)
+            {
+                if (pBytesAvailable < 8) return pBytesAvailable - 8;
+                return BitConverter.ToInt32(pBuffer, 4) ^ ivBytes;
+            }
+            return length;
         }
 
         public void TransformKMS(byte[] pBuffer)
@@ -110,11 +126,13 @@ namespace MapleShark
             };
             byte[] currentIVBlock = new byte[16];
             int dataSize = pData.Length;
+            int startBlockSize = 1456;
+            if (dataSize >= 0xFF00) startBlockSize -= 4;
 
             int blockSize = 0;
             for (int start = 0; start < dataSize; start += blockSize)
             {
-                blockSize = Math.Min(start == 0 ? 1456 : 1460, dataSize - start);
+                blockSize = Math.Min(start == 0 ? startBlockSize : 1460, dataSize - start);
                 Buffer.BlockCopy(freshIVBlock, 0, currentIVBlock, 0, 16);
 
                 for (int i = 0; i < blockSize; i++)

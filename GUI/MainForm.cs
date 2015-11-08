@@ -200,7 +200,8 @@ namespace MapleShark
                 {
                     if (!started)
                         continue;
-                    TcpPacket tcpPacket = TcpPacket.GetEncapsulated(Packet.ParsePacket(packet.LinkLayerType, packet.Data));
+
+                    TcpPacket tcpPacket = (TcpPacket)Packet.ParsePacket(packet.LinkLayerType, packet.Data).Extract(typeof(TcpPacket));
                     if (tcpPacket == null)
                         continue;
 
@@ -211,10 +212,16 @@ namespace MapleShark
                     {
                         if (tcpPacket.Syn && !tcpPacket.Ack)
                         {
+                            if (session != null)
+                                session.Show(mDockPanel, DockState.Document);
+
                             session = NewSession();
                             var res = session.BufferTCPPacket(tcpPacket, packet.Timeval.Date);
                             if (res == SessionForm.Results.Continue)
-                                session.Show(mDockPanel, DockState.Document);
+                            {
+                                //    mDockPanel.Contents.Add(session);
+                                //session.Show(mDockPanel, DockState.Document);
+                            }
                         }
                         else if (session != null && session.MatchTCPPacket(tcpPacket))
                         {
@@ -226,14 +233,22 @@ namespace MapleShark
                         }
 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Console.WriteLine("Exception while parsing logfile: {0}", ex);
                         session.Close();
                         session = null;
                     }
                 }
 
-                mSearchForm.RefreshOpcodes(false);
+
+                if (session != null)
+                    session.Show(mDockPanel, DockState.Document);
+
+                if (session != null)
+                {
+                    mSearchForm.RefreshOpcodes(false);
+                }
             });
         }
 
@@ -310,7 +325,8 @@ namespace MapleShark
                 {
                     if (!started)
                         continue;
-                    TcpPacket tcpPacket = TcpPacket.GetEncapsulated(Packet.ParsePacket(packet.LinkLayerType, packet.Data));
+
+                    TcpPacket tcpPacket = (TcpPacket)Packet.ParsePacket(packet.LinkLayerType, packet.Data).Extract(typeof(TcpPacket));
                     SessionForm session = null;
                     try
                     {

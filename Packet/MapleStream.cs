@@ -23,48 +23,57 @@ namespace MapleShark
         private const int DEFAULT_SIZE = 4096;
 
         private bool mOutbound = false;
-        public MapleAES mAES = null;
+        private MapleAES mAES = null;
         private byte[] mBuffer = new byte[DEFAULT_SIZE];
         private int mCursor = 0;
+        private int _expectedDataSize = 4;
 
         private TransformMethod _transformMethod;
         private bool _usesByteHeader = false;
+        private bool _usesOldHeader = false;
+
+        public ushort Build { get; private set; }
+        public byte Locale { get; private set; }
 
         public MapleStream(bool pOutbound, ushort pBuild, byte pLocale, byte[] pIV, byte pSubVersion)
         {
             mOutbound = pOutbound;
-            if (pOutbound)
-                mAES = new MapleAES(pBuild, pLocale, pIV, pSubVersion);
-            else
-                mAES = new MapleAES((ushort)(0xFFFF - pBuild), pLocale, pIV, pSubVersion);
+            Build = pBuild;
+            Locale = pLocale;
 
-            if ((pLocale == MapleLocale.TESPIA && pBuild == 40) ||
-                (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild == 15))
+            if (mOutbound)
+                mAES = new MapleAES(Build, Locale, pIV, pSubVersion);
+            else
+                mAES = new MapleAES((ushort)(0xFFFF - Build), Locale, pIV, pSubVersion);
+
+            if ((Locale == MapleLocale.TESPIA && Build == 40) ||
+                (Locale == MapleLocale.SOUTH_EAST_ASIA && Build == 15))
             {
                 // WvsBeta
                 _transformMethod = TransformMethod.MAPLE_CRYPTO | TransformMethod.SHIFT_IV;
                 _usesByteHeader = true;
             }
-            else if (pLocale == MapleLocale.KOREA_TEST && pBuild == 255)
+            else if (Locale == MapleLocale.KOREA_TEST && Build == 255)
             {
                 // KMSB (Modified client)
                 _transformMethod = TransformMethod.OLD_KMS_CRYPTO | TransformMethod.SHIFT_IV_OLD;
                 _usesByteHeader = true;
+                _usesOldHeader = true;
             }
             else if (
-                pLocale == MapleLocale.TAIWAN ||
-                pLocale == MapleLocale.CHINA ||
-                pLocale == MapleLocale.TESPIA ||
-                pLocale == MapleLocale.JAPAN ||
-                (pLocale == MapleLocale.GLOBAL && (short)pBuild >= 149) ||
-                (pLocale == MapleLocale.KOREA && pBuild >= 221) ||
-                (pLocale == MapleLocale.SOUTH_EAST_ASIA && pBuild >= 144) ||
-                (pLocale == MapleLocale.EUROPE && pBuild >= 115))
+                Locale == MapleLocale.TAIWAN ||
+                Locale == MapleLocale.CHINA ||
+                Locale == MapleLocale.TESPIA ||
+                Locale == MapleLocale.JAPAN ||
+                (Locale == MapleLocale.GLOBAL && (short)Build >= 149) ||
+                (Locale == MapleLocale.KOREA && Build >= 221) ||
+                (Locale == MapleLocale.SOUTH_EAST_ASIA && Build >= 144) ||
+                (Locale == MapleLocale.EUROPE && Build >= 115))
             {
                 // TWMS / CMS / CMST / JMS / GMS (>= 149)
                 _transformMethod = TransformMethod.AES | TransformMethod.SHIFT_IV;
             }
-            else if (pLocale == MapleLocale.KOREA || pLocale == MapleLocale.KOREA_TEST)
+            else if (Locale == MapleLocale.KOREA || Locale == MapleLocale.KOREA_TEST)
             {
                 // KMS / KMST
                 _transformMethod = TransformMethod.KMS_CRYPTO;
@@ -91,28 +100,39 @@ namespace MapleShark
             mCursor += pLength;
         }
 
-        public MaplePacket Read(DateTime pTransmitted, ushort pBuild, byte pLocale)
+        public MaplePacket Read(DateTime pTransmitted)
         {
-            if (mCursor < 4) return null;
+            if (mCursor < _expectedDataSize) return null;
             if (!mAES.ConfirmHeader(mBuffer, 0))
             {
                 throw new Exception("Failed to confirm packet header");
             }
 
-            ushort packetSize = mAES.GetHeaderLength(mBuffer, 0, pBuild == 255 && pLocale == 1);
-            if (mCursor < (packetSize + 4))
+            int headerLength = MapleAES.GetHeaderLength(mBuffer, mCursor, _usesOldHeader);
+            _expectedDataSize = headerLength;
+            if (mCursor < headerLength)
+            {
                 return null;
+            }
+
+            int packetSize = MapleAES.GetPacketLength(mBuffer, mCursor, _usesOldHeader);
+            _expectedDataSize = packetSize + headerLength;
+            if (mCursor < (packetSize + headerLength))
+            {
+                return null;
+            }
+
             byte[] packetBuffer = new byte[packetSize];
-            Buffer.BlockCopy(mBuffer, 4, packetBuffer, 0, packetSize);
+            Buffer.BlockCopy(mBuffer, headerLength, packetBuffer, 0, packetSize);
 
             var preDecodeIV = BitConverter.ToUInt32(mAES.mIV, 0);
 
-            Decrypt(packetBuffer, pBuild, pLocale, _transformMethod);
+            Decrypt(packetBuffer, _transformMethod);
 
             var postDecodeIV = BitConverter.ToUInt32(mAES.mIV, 0);
 
-            mCursor -= (packetSize + 4);
-            if (mCursor > 0) Buffer.BlockCopy(mBuffer, packetSize + 4, mBuffer, 0, mCursor);
+            mCursor -= _expectedDataSize;
+            if (mCursor > 0) Buffer.BlockCopy(mBuffer, _expectedDataSize, mBuffer, 0, mCursor);
             ushort opcode;
 
             if (_usesByteHeader)
@@ -128,11 +148,13 @@ namespace MapleShark
                 Array.Resize(ref packetBuffer, packetSize - 2);
             }
 
-            Definition definition = Config.Instance.GetDefinition(pBuild, pLocale, mOutbound, opcode);
-            return new MaplePacket(pTransmitted, mOutbound, pBuild, pLocale, opcode, definition == null ? "" : definition.Name, packetBuffer, preDecodeIV, postDecodeIV);
+            _expectedDataSize = 4;
+
+            Definition definition = Config.Instance.GetDefinition(Build, Locale, mOutbound, opcode);
+            return new MaplePacket(pTransmitted, mOutbound, Build, Locale, opcode, definition == null ? "" : definition.Name, packetBuffer, preDecodeIV, postDecodeIV);
         }
 
-        private void Decrypt(byte[] pBuffer, ushort pBuild, byte pLocale, TransformMethod pTransformLocale)
+        private void Decrypt(byte[] pBuffer, TransformMethod pTransformLocale)
         {
             if ((pTransformLocale & TransformMethod.AES) != 0) mAES.TransformAES(pBuffer);
 

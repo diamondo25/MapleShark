@@ -293,7 +293,7 @@ namespace MapleShark
 
                 mPacketList.Items.Add(packet);
                 mPackets.Add(packet);
-                MainForm.SearchForm.RefreshOpcodes(true);
+
                 Console.WriteLine("[CONNECTION] MapleStory V{2}.{3} Locale {4}", mLocalEndpoint, mRemoteEndpoint, mBuild, subVersion, serverLocale);
 
             }
@@ -342,7 +342,7 @@ namespace MapleShark
             {
                 mPacketList.BeginUpdate();
 
-                while ((packet = pStream.Read(pArrivalDate, mBuild, mLocale)) != null)
+                while ((packet = pStream.Read(pArrivalDate)) != null)
                 {
                     mPackets.Add(packet);
                     Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, packet.Outbound, packet.Opcode);
@@ -370,7 +370,7 @@ namespace MapleShark
                 return;
             }
 
-            if (DockPanel.ActiveDocument == this && refreshOpcodes) MainForm.SearchForm.RefreshOpcodes(true);
+            if (DockPanel != null && DockPanel.ActiveDocument == this && refreshOpcodes) MainForm.SearchForm.RefreshOpcodes(true);
         }
 
         public void OpenReadOnly(string pFilename)
@@ -446,7 +446,7 @@ namespace MapleShark
                 while (stream.Position < stream.Length)
                 {
                     long timestamp = reader.ReadInt64();
-                    ushort size = reader.ReadUInt16();
+                    int size = MapleSharkVersion < 0x2027 ? reader.ReadUInt16() : reader.ReadInt32();
                     ushort opcode = reader.ReadUInt16();
                     bool outbound;
 
@@ -523,7 +523,7 @@ namespace MapleShark
             mPacketList_SelectedIndexChanged(null, null);
         }
 
-        private Regex _packetRegex = new Regex(@"\[(.{1,2}):(.{1,2}):(.{1,2})\]\[(\d+)\] (Recv|Send):  (.+)");
+        private static Regex _packetRegex = new Regex(@"\[(.{1,2}):(.{1,2}):(.{1,2})\]\[(\d+)\] (Recv|Send):  (.+)");
         internal void ParseMSnifferLine(string packetLine)
         {
             var match = _packetRegex.Match(packetLine);
@@ -548,8 +548,6 @@ namespace MapleShark
                 buffer[i - 2] = byte.Parse(bytesText[i], System.Globalization.NumberStyles.HexNumber);
             }
 
-
-
             Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, outbound, opcode);
             MaplePacket packet = new MaplePacket(date, outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer, 0, 0);
             mPackets.Add(packet);
@@ -573,7 +571,7 @@ namespace MapleShark
             }
             using (FileStream stream = new FileStream(mFilename, FileMode.Create, FileAccess.Write))
             {
-                var version = (ushort)0x2025;
+                var version = (ushort)0x2027;
 
                 BinaryWriter writer = new BinaryWriter(stream);
                 writer.Write(version);
@@ -588,15 +586,12 @@ namespace MapleShark
                 mPackets.ForEach(p =>
                 {
                     writer.Write((ulong)p.Timestamp.Ticks);
-                    writer.Write((ushort)p.Length);
+                    writer.Write((int)p.Length);
                     writer.Write((ushort)p.Opcode);
                     writer.Write((byte)(p.Outbound ? 1 : 0));
                     writer.Write(p.Buffer);
-                    if (version == 0x2025)
-                    {
-                        writer.Write(p.PreDecodeIV);
-                        writer.Write(p.PostDecodeIV);
-                    }
+                    writer.Write(p.PreDecodeIV);
+                    writer.Write(p.PostDecodeIV);
                 });
 
                 stream.Flush();
