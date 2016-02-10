@@ -23,6 +23,7 @@ namespace MapleShark
     {
         public enum Results
         {
+            Show,
             Continue,
             Terminated,
             CloseMe
@@ -295,7 +296,9 @@ namespace MapleShark
                 mPackets.Add(packet);
 
                 Console.WriteLine("[CONNECTION] MapleStory V{2}.{3} Locale {4}", mLocalEndpoint, mRemoteEndpoint, mBuild, subVersion, serverLocale);
-
+                
+                ProcessTCPPacket(pTCPPacket, ref mInboundSequence, mInboundBuffer, mInboundStream, pArrivalTime);
+                return Results.Show;
             }
             if (pTCPPacket.SourcePort == mLocalPort) ProcessTCPPacket(pTCPPacket, ref mOutboundSequence, mOutboundBuffer, mOutboundStream, pArrivalTime);
             else ProcessTCPPacket(pTCPPacket, ref mInboundSequence, mInboundBuffer, mInboundStream, pArrivalTime);

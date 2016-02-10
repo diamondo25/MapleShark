@@ -304,6 +304,7 @@ namespace MapleShark
             else mPropertyForm.Hide();
         }
 
+        Dictionary<int, SessionForm> waiting = new Dictionary<int, SessionForm>(); 
         List<SessionForm> closes = new List<SessionForm>();
         private void mTimer_Tick(object sender, EventArgs e)
         {
@@ -336,11 +337,13 @@ namespace MapleShark
                             var res = session.BufferTCPPacket(tcpPacket, packet.Timeval.Date);
                             if (res == SessionForm.Results.Continue)
                             {
-                                session.Show(mDockPanel, DockState.Document);
+                                int hash = tcpPacket.SourcePort << 16 | tcpPacket.DestinationPort;
+                                waiting[hash] = session;
                             }
                         }
                         else
                         {
+                            int hash = tcpPacket.DestinationPort << 16 | tcpPacket.SourcePort;
                             session = Array.Find(MdiChildren, f => (f as SessionForm).MatchTCPPacket(tcpPacket)) as SessionForm;
                             if (session != null)
                             {
@@ -348,8 +351,25 @@ namespace MapleShark
 
                                 if (res == SessionForm.Results.CloseMe)
                                 {
+                                    waiting.Remove(hash);
                                     session.Close();
                                 }
+                                continue;
+                            }
+
+                            if (waiting.TryGetValue(hash, out session))
+                            {
+                                var res = session.BufferTCPPacket(tcpPacket, packet.Timeval.Date);
+
+                                switch (res)
+                                {
+                                    case SessionForm.Results.Show:
+                                        session.Show(mDockPanel, DockState.Document);
+                                        break;
+                                    case SessionForm.Results.Continue:
+                                        continue;
+                                }
+                                waiting.Remove(hash);
                             }
                         }
                     }
