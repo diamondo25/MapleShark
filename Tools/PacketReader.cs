@@ -7,7 +7,7 @@ namespace MapleLib.PacketLib
 	/// <summary>
 	/// Class to handle reading data from a packet
 	/// </summary>
-	public class PacketReader
+	public class PacketReader : IDisposable
 	{
         protected MemoryStream _buffer;
 
@@ -33,6 +33,16 @@ namespace MapleLib.PacketLib
 			_buffer = new MemoryStream(arrayOfBytes, false);
 			_binReader = new BinaryReader(_buffer, Encoding.Default);
 		}
+
+        bool disposed = false;
+        public void Dispose()
+        {
+            if (disposed) return;
+            _binReader.Close();
+            _buffer.Dispose();
+
+            disposed = true;
+        }
 
 		/// <summary>
 		/// Restart reading from the point specified.

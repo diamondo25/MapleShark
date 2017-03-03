@@ -17,6 +17,9 @@ namespace CraftNetTools
         public static void Check()
         {
             string name = Application.ProductName;
+#if X64
+            name += "-x64";
+#endif
             int version = int.Parse(Application.ProductVersion.Replace(".", ""));
 
             try

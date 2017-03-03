@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace MapleShark
 {
-    public sealed class MapleAES
+    public sealed class MapleAES : IDisposable
     {
         private readonly static byte[] sSecretKey = new byte[] {
             0x13, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0xB4, 0x00, 0x00, 0x00,
@@ -41,12 +41,21 @@ namespace MapleShark
             if ((short)pBuild < 0)
                 pBuild = (ushort)(0xFFFF - pBuild);
 
+            // TODO: Only do this when required. It currently does not affect the performance too much, however.
             mAES.Key = MapleKeys.GetKeyForVersion(pLocale, pBuild, pSubVersion) ?? sSecretKey;
 
             mAES.Mode = CipherMode.ECB;
             mAES.Padding = PaddingMode.PKCS7;
             mTransformer = mAES.CreateEncryptor();
             mIV = pIV;
+        }
+
+        bool disposed = false;
+        public void Dispose()
+        {
+            if (disposed) return;
+            mTransformer?.Dispose();
+            disposed = true;
         }
 
         public void ShiftIVOld()
@@ -115,38 +124,75 @@ namespace MapleShark
 
             ShiftIVOld();
         }
+        
+        const int AES_XOR_TABLE_BLOCKS = 92; // maximum amount of blocks; this is for 1472 bytes
+        private byte[] AES_XOR_TABLE = new byte[AES_XOR_TABLE_BLOCKS * 16];
 
         public void TransformAES(byte[] pData)
         {
+            int dataSize = pData.Length;
+
             byte[] freshIVBlock = new byte[16] {
                 mIV[0], mIV[1], mIV[2], mIV[3],
                 mIV[0], mIV[1], mIV[2], mIV[3],
                 mIV[0], mIV[1], mIV[2], mIV[3],
                 mIV[0], mIV[1], mIV[2], mIV[3]
             };
-            byte[] currentIVBlock = new byte[16];
-            int dataSize = pData.Length;
-            int startBlockSize = 1456;
-            if (dataSize >= 0xFF00) startBlockSize -= 4;
 
-            int blockSize = 0;
-            for (int start = 0; start < dataSize; start += blockSize)
+            int requiredBlocks = Math.Min((dataSize / 16) + 1, AES_XOR_TABLE_BLOCKS);
+
+            // Transform block 1 (from the fresh IV block) to index 0
+            mTransformer.TransformBlock(freshIVBlock, 0, 16, AES_XOR_TABLE, 0);
+
+            int i;
+            for (i = 0; i < (requiredBlocks - 1); i++)
             {
-                blockSize = Math.Min(start == 0 ? startBlockSize : 1460, dataSize - start);
-                Buffer.BlockCopy(freshIVBlock, 0, currentIVBlock, 0, 16);
+                // Transform N to N + 1
+                mTransformer.TransformBlock(AES_XOR_TABLE, (i * 16), 16, AES_XOR_TABLE, ((i + 1) * 16));
+            }
 
-                for (int i = 0; i < blockSize; i++)
+            int startOffset = 1456;
+            if (dataSize >= 0xFF00)
+                startOffset -= 4; // Substract 4 bytes (big header size)
+
+            int blockSize = Math.Min(startOffset, dataSize);
+
+            // How many bytes do we process per iteration?
+            const int bigChunkSize = 8;
+            unsafe
+            {
+                fixed (byte* dataPtr = pData)
+                fixed (byte* xorPtr = AES_XOR_TABLE)
                 {
-                    // For every 16 bytes, update IV. 
-                    if ((i % 16) == 0)
-                    {
-                        mTransformer.TransformBlock(currentIVBlock, 0, 16, currentIVBlock, 0);
-                    }
+                    byte* currentInputByte = dataPtr;
 
-                    pData[start + i] ^= currentIVBlock[i % 16];
+                    for (int start = 0; start < dataSize;)
+                    {
+                        byte* currentXorByte = xorPtr;
+
+                        i = 0;
+
+                        int intBlocks = blockSize / bigChunkSize;
+                        for (; i < intBlocks; ++i)
+                        {
+                            *(UInt64*)currentInputByte ^= *(UInt64*)currentXorByte;
+                            currentInputByte += bigChunkSize;
+                            currentXorByte += bigChunkSize;
+                        }
+
+                        i *= bigChunkSize;
+
+                        for (; i < blockSize; i++)
+                        {
+                            *(currentInputByte++) ^= *(currentXorByte++);
+                        }
+                        start += blockSize;
+                        blockSize = Math.Min(1460, dataSize - start);
+                    }
                 }
             }
         }
+
         public void ShiftIV(byte[] pOldIV = null)
         {
             if (pOldIV == null) pOldIV = mIV;
@@ -168,7 +214,7 @@ namespace MapleShark
             pIV[3] -= (byte)(pIV[0] - tableInput);
 
             uint val = (uint)(pIV[0] | pIV[1] << 8 | pIV[2] << 16 | pIV[3] << 24);
-            val = (val >> 0x1D | val << 0x03);
+            val = (val >> 0x1D | val << 0x03); // ROL32(3)
             pIV[0] = (byte)(val & 0xFF);
             pIV[1] = (byte)((val >> 8) & 0xFF);
             pIV[2] = (byte)((val >> 16) & 0xFF);

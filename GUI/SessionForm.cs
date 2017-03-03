@@ -257,31 +257,28 @@ namespace MapleShark
                     definition.Opcode = 0xFFFF;
                     definition.Name = "Maple Handshake";
                     definition.Build = mBuild;
-                    DefinitionsContainer.Instance.SaveDefinition(definition);
+                    SaveDefinition(definition);
                 }
 
                 {
-                    string filename = "Scripts" +
-                        Path.DirectorySeparatorChar + mLocale.ToString() +
-                        Path.DirectorySeparatorChar + mBuild.ToString() +
-                        Path.DirectorySeparatorChar + "Inbound" +
-                        Path.DirectorySeparatorChar + "0xFFFF.txt";
-                    if (!Directory.Exists(Path.GetDirectoryName(filename))) Directory.CreateDirectory(Path.GetDirectoryName(filename));
+
+
+                    var filename = Helpers.GetScriptPath(mLocale, mBuild, false, 0xFFFF);
+                    Helpers.MakeSureFileDirectoryExists(filename);
+
+                    // Create main script
                     if (!File.Exists(filename))
                     {
-                        string contents = "";
-                        contents += "using (ScriptAPI) {\r\n";
-                        contents += "\tAddShort(\"Packet Size\");\r\n";
-                        contents += "\tAddUShort(\"MapleStory Version\");\r\n";
-                        contents += "\tAddString(\"MapleStory Patch Location/Subversion\");\r\n";
-                        contents += "\tAddField(\"Local Initializing Vector (IV)\", 4);\r\n";
-                        contents += "\tAddField(\"Remote Initializing Vector (IV)\", 4);\r\n";
-                        contents += "\tAddByte(\"MapleStory Locale\");\r\n";
-                        if (mRemotePort == 8484 && ((mLocale == MapleLocale.GLOBAL && version >= 160) ||
-                                                    (mLocale == MapleLocale.TAIWAN && version >= 176) ||
-                                                    (mLocale == MapleLocale.CHINA && version >= 122)))
-                            contents += "\tAddByte(\"Unknown\");\r\n";
-                        contents += "}";
+                        string contents = @"
+using (ScriptAPI) {
+    AddShort(""Packet Size"");
+    AddUShort(""MapleStory Version"");
+    AddString(""MapleStory Patch Location/Subversion"");
+    AddField(""Local Initializing Vector (IV)"", 4);
+    AddField(""Remote Initializing Vector (IV)"", 4);
+    AddByte(""MapleStory Locale"");
+}
+";
                         File.WriteAllText(filename, contents);
                     }
                 }
@@ -293,7 +290,7 @@ namespace MapleShark
                 }
 
                 mPacketList.Items.Add(packet);
-                mPackets.Add(packet);
+                AddPacket(packet);
 
                 Console.WriteLine("[CONNECTION] MapleStory V{2}.{3} Locale {4}", mLocalEndpoint, mRemoteEndpoint, mBuild, subVersion, serverLocale);
                 
@@ -347,7 +344,7 @@ namespace MapleShark
 
                 while ((packet = pStream.Read(pArrivalDate)) != null)
                 {
-                    mPackets.Add(packet);
+                    AddPacket(packet);
                     Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, packet.Outbound, packet.Opcode);
                     if (!mOpcodes.Exists(op => op.Outbound == packet.Outbound && op.Header == packet.Opcode))
                     {
@@ -474,7 +471,7 @@ namespace MapleShark
 
                     Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, outbound, opcode);
                     MaplePacket packet = new MaplePacket(new DateTime(timestamp), outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer, preDecodeIV, postDecodeIV);
-                    mPackets.Add(packet);
+                    AddPacket(packet);
                     if (!mOpcodes.Exists(op => op.Outbound == packet.Outbound && op.Header == packet.Opcode)) mOpcodes.Add(new Opcode(packet.Outbound, packet.Opcode));
                     if (definition != null && definition.Ignore) continue;
                     mPacketList.Items.Add(packet);
@@ -553,7 +550,7 @@ namespace MapleShark
 
             Definition definition = Config.Instance.GetDefinition(mBuild, mLocale, outbound, opcode);
             MaplePacket packet = new MaplePacket(date, outbound, mBuild, mLocale, opcode, definition == null ? "" : definition.Name, buffer, 0, 0);
-            mPackets.Add(packet);
+            AddPacket(packet);
             if (!mOpcodes.Exists(op => op.Outbound == packet.Outbound && op.Header == packet.Opcode)) mOpcodes.Add(new Opcode(packet.Outbound, packet.Opcode));
             if (definition != null && definition.Ignore) return;
             mPacketList.Items.Add(packet);
@@ -661,8 +658,9 @@ namespace MapleShark
 
         private void mViewCommonScriptMenu_Click(object pSender, EventArgs pArgs)
         {
-            string scriptPath = "Scripts" + Path.DirectorySeparatorChar + mLocale.ToString() + Path.DirectorySeparatorChar + mBuild.ToString() + Path.DirectorySeparatorChar + "Common.txt";
-            if (!Directory.Exists(Path.GetDirectoryName(scriptPath))) Directory.CreateDirectory(Path.GetDirectoryName(scriptPath));
+            var scriptPath = Helpers.GetCommonScriptPath(mLocale, mBuild);
+            Helpers.MakeSureFileDirectoryExists(scriptPath);
+
             ScriptForm script = new ScriptForm(scriptPath, null);
             script.FormClosed += CommonScript_FormClosed;
             script.Show(DockPanel, new Rectangle(MainForm.Location, new Size(600, 300)));
@@ -698,10 +696,10 @@ namespace MapleShark
         {
             if (mPacketList.SelectedIndices.Count == 0) return;
             MaplePacket packet = mPacketList.SelectedItems[0] as MaplePacket;
-            string scriptPath = "Scripts" + Path.DirectorySeparatorChar + mLocale.ToString() + Path.DirectorySeparatorChar + mBuild.ToString() + Path.DirectorySeparatorChar + (packet.Outbound ? "Outbound" : "Inbound") + Path.DirectorySeparatorChar + "0x" + packet.Opcode.ToString("X4") + ".txt";
-
-            if (!Directory.Exists(Path.GetDirectoryName(scriptPath))) Directory.CreateDirectory(Path.GetDirectoryName(scriptPath));
-
+            
+            var scriptPath = Helpers.GetScriptPath(mLocale, mBuild, packet.Outbound, packet.Opcode);
+            Helpers.MakeSureFileDirectoryExists(scriptPath);
+            
             ScriptForm script = new ScriptForm(scriptPath, packet);
             script.FormClosed += Script_FormClosed;
             script.Show(DockPanel, new Rectangle(MainForm.Location, new Size(600, 300)));
@@ -758,7 +756,8 @@ namespace MapleShark
                     definition.Locale = mLocale;
                 }
                 definition.Name = mPacketContextNameBox.Text;
-                DefinitionsContainer.Instance.SaveDefinition(definition);
+                SaveDefinition(definition);
+
                 pArgs.SuppressKeyPress = true;
                 mPacketContextMenu.Close();
                 RefreshPackets();
@@ -782,7 +781,7 @@ namespace MapleShark
                 definition.Locale = mLocale;
             }
             definition.Ignore = mPacketContextIgnoreMenu.Checked;
-            DefinitionsContainer.Instance.SaveDefinition(definition);
+            SaveDefinition(definition);
 
             int newIndex = packet.Index - 1;
             for (var i = packet.Index - 1; i > 0; i--)
@@ -929,6 +928,18 @@ namespace MapleShark
             var startIndex = mPackets.FindIndex((p) => { return p == packet; }) + 1;
             mPackets.RemoveRange(startIndex, mPackets.Count - startIndex);
             RefreshPackets();
+        }
+
+
+        private void SaveDefinition(Definition definition)
+        {
+            DefinitionsContainer.Instance.SaveDefinition(definition);
+        }
+
+
+        private void AddPacket(MaplePacket packet)
+        {
+            mPackets.Add(packet);
         }
 
     }

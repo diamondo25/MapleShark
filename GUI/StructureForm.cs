@@ -30,8 +30,9 @@ namespace MapleShark
             mSubNodes.Clear();
             pPacket.Rewind();
 
-            string scriptPath = Application.StartupPath + Path.DirectorySeparatorChar + "Scripts" + Path.DirectorySeparatorChar + pPacket.Locale.ToString() + Path.DirectorySeparatorChar + pPacket.Build.ToString() + Path.DirectorySeparatorChar + (pPacket.Outbound ? "Outbound" : "Inbound") + Path.DirectorySeparatorChar + "0x" + pPacket.Opcode.ToString("X4") + ".txt";
-            string commonPath = Application.StartupPath + Path.DirectorySeparatorChar + "Scripts" + Path.DirectorySeparatorChar + pPacket.Locale.ToString() + Path.DirectorySeparatorChar + pPacket.Build.ToString() + Path.DirectorySeparatorChar + "Common.txt";
+            var scriptPath = Helpers.GetScriptPath(pPacket.Locale, pPacket.Build, pPacket.Outbound, pPacket.Opcode);
+            var commonPath = Helpers.GetCommonScriptPath(pPacket.Locale, pPacket.Build);
+
             if (File.Exists(scriptPath))
             {
                 mParsing = pPacket;
