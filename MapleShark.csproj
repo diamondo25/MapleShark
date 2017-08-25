@@ -104,8 +104,8 @@
       <HintPath>packages\PacketDotNet.0.13.0\lib\net\PacketDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpPcap, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
+    <Reference Include="SharpPcap, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SharpPcap.4.1.0\lib\net\SharpPcap.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -317,7 +317,6 @@
     <Compile Include="GUI\PropertyForm.Designer.cs">
       <DependentUpon>PropertyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tools\RealtimePacketProcessor.cs" />
     <Compile Include="Tools\ScriptAPI.cs" />
     <Compile Include="ScriptDotNet\AST\AScriptAstTemplate.cs" />
     <Compile Include="ScriptDotNet\AST\ScriptArrayConstructor.cs" />
