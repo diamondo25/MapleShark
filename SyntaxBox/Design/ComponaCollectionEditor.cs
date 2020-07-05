@@ -91,10 +91,11 @@ namespace Alsing.Design
                 if (types.Length > 1)
                 {
                     GUI.btnDropdown.Visible = true;
-                    GUI.btnDropdown.ContextMenu = new ContextMenu();
+                    GUI.btnDropdown.ContextMenuStrip = new ContextMenuStrip();
                     for (int i = 0; (i < types.Length); i ++)
                     {
-                        GUI.btnDropdown.ContextMenu.MenuItems.Add(new TypeMenuItem(types[i], btnDropDownMenuItem_Click));
+                        //GUI.btnDropdown.ContextMenuStrip.Items.Add(types[i].Name, null, btnDropDownMenuItem_Click);
+                        GUI.btnDropdown.ContextMenuStrip.Items.Add(types[i].Name);
                     }
                 }
 
@@ -167,15 +168,15 @@ namespace Alsing.Design
 
             protected void btnDropDown_Click(object o, EventArgs e)
             {
-                GUI.btnDropdown.ContextMenu.Show(GUI.btnDropdown, new Point(0, GUI.btnDropdown.Height));
+                GUI.btnDropdown.ContextMenuStrip.Show(GUI.btnDropdown, new Point(0, GUI.btnDropdown.Height));
             }
 
-            protected void btnDropDownMenuItem_Click(object o, EventArgs e)
-            {
-                var tmi = o as TypeMenuItem;
-                if (tmi != null) 
-                    CreateAndAddInstance(tmi.Type as Type);
-            }
+            //protected void btnDropDownMenuItem_Click(object o, EventArgs e)
+            //{
+            //    var tmi = o as TypeMenuItem;
+            //    if (tmi != null) 
+            //        CreateAndAddInstance(tmi.Type as Type);
+            //}
 
             protected void btnDown_Click(object o, EventArgs e)
             {
@@ -331,26 +332,6 @@ namespace Alsing.Design
                 {
                     base.DisplayError(x);
                 }
-            }
-        }
-
-        #endregion
-
-        #region Nested type: TypeMenuItem
-
-        public class TypeMenuItem : MenuItem
-        {
-            #region PUBLIC PROPERTY TYPE
-
-            public object Type { get; set; }
-
-            #endregion
-
-            public TypeMenuItem(object o, EventHandler e)
-            {
-                Text = o.ToString();
-                Type = o;
-                Click += e;
             }
         }
 

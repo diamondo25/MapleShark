@@ -1,7 +1,6 @@
 ﻿using ScriptNET;
 using PacketDotNet;
 using PacketDotNet.Utils;
-using PacketDotNet.LLDP;
 using SharpPcap;
 using System;
 using System.Collections.Generic;
@@ -110,14 +109,14 @@ namespace MapleShark
 
         internal Results BufferTCPPacket(TcpPacket pTCPPacket, DateTime pArrivalTime)
         {
-            if (pTCPPacket.Fin || pTCPPacket.Rst)
+            if (pTCPPacket.Finished || pTCPPacket.Reset)
             {
                 mTerminated = true;
                 Text += " (Terminated)";
 
                 return mPackets.Count == 0 ? Results.CloseMe : Results.Terminated;
             }
-            if (pTCPPacket.Syn && !pTCPPacket.Ack)
+            if (pTCPPacket.Synchronize && !pTCPPacket.Acknowledgment)
             {
                 mLocalPort = (ushort)pTCPPacket.SourcePort;
                 mRemotePort = (ushort)pTCPPacket.DestinationPort;
@@ -138,7 +137,7 @@ namespace MapleShark
                     return Results.CloseMe;
                 }
             }
-            if (pTCPPacket.Syn && pTCPPacket.Ack) { mInboundSequence = (uint)(pTCPPacket.SequenceNumber + 1); return Results.Continue; }
+            if (pTCPPacket.Synchronize && pTCPPacket.Acknowledgment) { mInboundSequence = (uint)(pTCPPacket.SequenceNumber + 1); return Results.Continue; }
             if (pTCPPacket.PayloadData.Length == 0) return Results.Continue;
             if (mBuild == 0)
             {

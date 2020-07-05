@@ -13,11 +13,11 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
-using System.Web;
 using System.Windows.Forms;
 using Alsing.Drawing.GDI;
 using Alsing.Windows.Forms.FormatLabel;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Alsing.Windows.Forms.CoreLib
 {
@@ -476,7 +476,7 @@ namespace Alsing.Windows.Forms.CoreLib
 
 
                     cmd.Text = cmd.Text.Replace(" ", ((char) 1).ToString());
-                    cmd.Text = HttpUtility.HtmlDecode(cmd.Text);
+                    cmd.Text = WebUtility.HtmlDecode(cmd.Text);
                     //	cmd.Text =cmd.Text.Replace (" ","*");
                     cmd.Text = cmd.Text.Replace(((char) 1).ToString(), " ");
                 }

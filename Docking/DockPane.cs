@@ -261,7 +261,7 @@ namespace WeifenLuo.WinFormsUI.Docking
                 return;
             }
 
-            ContextMenu contextMenu = menu as ContextMenu;
+			ContextMenuStrip contextMenu = menu as ContextMenuStrip;
             if (contextMenu != null)
                 contextMenu.Show(this, position);
         }

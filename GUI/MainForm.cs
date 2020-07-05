@@ -2,7 +2,6 @@
 using SharpPcap.LibPcap;
 using PacketDotNet;
 using PacketDotNet.Utils;
-using PacketDotNet.LLDP;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -201,7 +200,7 @@ namespace MapleShark
                     if (!started)
                         continue;
 
-                    TcpPacket tcpPacket = (TcpPacket)Packet.ParsePacket(packet.LinkLayerType, packet.Data).Extract(typeof(TcpPacket));
+                    TcpPacket tcpPacket = Packet.ParsePacket(packet.LinkLayerType, packet.Data).Extract<TcpPacket>();
                     if (tcpPacket == null)
                         continue;
 
@@ -210,7 +209,7 @@ namespace MapleShark
                         continue;
                     try
                     {
-                        if (tcpPacket.Syn && !tcpPacket.Ack)
+                        if (tcpPacket.Synchronize && !tcpPacket.Acknowledgment)
                         {
                             if (session != null)
                                 session.Show(mDockPanel, DockState.Document);
@@ -327,11 +326,11 @@ namespace MapleShark
                     if (!started)
                         continue;
 
-                    TcpPacket tcpPacket = (TcpPacket)Packet.ParsePacket(packet.LinkLayerType, packet.Data).Extract(typeof(TcpPacket));
+                    TcpPacket tcpPacket = Packet.ParsePacket(packet.LinkLayerType, packet.Data).Extract<TcpPacket>();
                     SessionForm session = null;
                     try
                     {
-                        if (tcpPacket.Syn && !tcpPacket.Ack && tcpPacket.DestinationPort >= Config.Instance.LowPort && tcpPacket.DestinationPort <= Config.Instance.HighPort)
+                        if (tcpPacket.Synchronize && !tcpPacket.Acknowledgment && tcpPacket.DestinationPort >= Config.Instance.LowPort && tcpPacket.DestinationPort <= Config.Instance.HighPort)
                         {
                             session = NewSession();
                             var res = session.BufferTCPPacket(tcpPacket, packet.Timeval.Date);
