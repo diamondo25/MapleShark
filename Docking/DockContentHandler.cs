@@ -608,8 +608,8 @@ namespace WeifenLuo.WinFormsUI.Docking
 				return DockHelper.IsDockStateValid(dockState, DockAreas);
 		}
 
-		private ContextMenu m_tabPageContextMenu = null;
-		public ContextMenu TabPageContextMenu
+		private ContextMenuStrip m_tabPageContextMenu = null;
+		public ContextMenuStrip TabPageContextMenu
 		{
 			get	{	return m_tabPageContextMenu;	}
 			set	{	m_tabPageContextMenu = value;	}
@@ -715,35 +715,7 @@ namespace WeifenLuo.WinFormsUI.Docking
 			if (Form.Parent == value)
 				return;
 
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // Workaround of .Net Framework bug:
-            // Change the parent of a control with focus may result in the first
-            // MDI child form get activated. 
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            bool bRestoreFocus = false;
-            if (Form.ContainsFocus)
-            {
-				//Suggested as a fix for a memory leak by bugreports
-                if (value == null && !IsFloat)
-                    DockPanel.ContentFocusManager.GiveUpFocus(this.Content);
-                else
-                {
-                    DockPanel.SaveFocus();
-                    bRestoreFocus = true;
-                }
-            }
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
             Form.Parent = value;
-
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // Workaround of .Net Framework bug:
-            // Change the parent of a control with focus may result in the first
-            // MDI child form get activated. 
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if (bRestoreFocus)
-                Activate();
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
 		public void Show()
